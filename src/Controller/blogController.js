@@ -1,3 +1,5 @@
+let blogModel= require('../Model/blogModel')
+const  mongoose = require("mongoose")
 
 const  mongoose = require("mongoose")
 let blogModel= require('../Model/blogModel')
@@ -134,6 +136,7 @@ const getBlogs = async function (req, res) {
 const updateBlog = async function (req, res) {
      try {
         let blogId = req.params.blogId
+       
 
         if(!Object.keys(req.body).length) 
             return res.status(400).send({status: false, msg: "No data provided to update."})
@@ -169,26 +172,29 @@ const updateBlog = async function (req, res) {
 // working 
 
 const deleteById = async function (req, res) {
-
-    let blog = req.params.blogId
-
-    if (!blog) {
-        return res.status(400).send({ status: false, msg: "blogId must be present in order to delete it" })
-    }
-
-    if (!mongoose.Types.ObjectId.isValid(blog)) {
-        return res.status(404).send({ status: false, msg: "Please provide a Valid blogId" })
-    }
-    let fullObject = await blogModel.findById(blog)
-
-    if (fullObject.isPublished != false && fullObject.isdeleted == false) {
-        let newData = await blogModel.findByIdAndUpdate(blog, { $set: { isdeleted: true } })
-        res.status(200).send()
-    }
-    else {
-        res.status(400).send({ status: false, msg: "This blog is not Available" })
-    }
-}
+    
+  let blog = req.params.blogId
+  console.log(blog)
+  
+  if(!blog){
+      return res.status(400).send({status : false, msg : "blogId must be present in order to delete it"})
+  }
+     
+  if(!mongoose.Types.ObjectId.isValid(blog)){
+      return res.status(404).send({status: false, msg: "Please provide a Valid blogId"})
+  }
+  let fullObject = await blogModel.findOne({_id:blog})
+  
+  if(fullObject.isPublished != false && fullObject.isdeleted==false) 
+  {
+      let newData = await blogModel.findByIdAndUpdate(blog , {$set:{isdeleted:true}})
+      res.status(200).send()
+  }
+  else
+  {
+      res.status(400).send({status:false,msg:"This data is not publised "})
+  }  
+};
 
 // delete using query params --->check
 
@@ -246,6 +252,12 @@ const deleteBlog = async function (req, res) {
 
 
 };
+module.exports.getBlogs =getBlogs
+module.exports.updateBlog = updateBlog;
+module.exports.deleteBlog = deleteBlog;
+module.exports.createBlog = createBlog;
+module.exports.deleteById=deleteById;
+//const blogModel = require("../Model/blogModel")
 
 // ------------------------------**------------------------**----------------------**-------------------
 

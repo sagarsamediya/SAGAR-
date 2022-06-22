@@ -13,7 +13,6 @@ mongoose.connect("mongodb+srv://SagarSamediya:sagar@cluster0.p5frd.mongodb.net/p
 
 
 
-
 .then( () => console.log("MongoDb is connected"))
 .catch ( err => console.log(err) )
 
