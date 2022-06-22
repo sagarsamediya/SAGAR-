@@ -62,4 +62,4 @@ const createAuthorization = async function(req,res,next)
 
 }
 
-module.exports={isPresentToken,isVerifyToken,isloggedInUser,createAuthorization}
+module.exports={isPresentToken,isVerifyToken}

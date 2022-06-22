@@ -4,6 +4,10 @@ let blogModel= require('../Model/blogModel')
 const { query } = require('express');
 
 
+const isValid = function (value) {
+    if (typeof value === 'undefined' || value === null) return false
+    if (typeof value === 'string' && value.trim().length === 0) return false
+}
 // ------------------------------**------------------------**----------------------**-------------------
 
 let createBlog = async function (req, res) {
@@ -128,8 +132,23 @@ const getBlogs = async function (req, res) {
 
 // =======================================================================
 const updateBlog = async function (req, res) {
-    try {
+     try {
         let blogId = req.params.blogId
+
+        if(!Object.keys(req.body).length) 
+            return res.status(400).send({status: false, msg: "No data provided to update."})
+        if(!mongoose.isValidObjectId(req.params.blogId))
+            return res.status(400).send({status: false, msg: "Invalid Blog objectId."})
+        // if (data.title == undefined)   return res.status(400).send({ status: false, messaage: "Pleage provide valid title" })
+        // if (data.body == undefined)   return res.status(400).send({ status: false, messaage: "Pleage provide valid title" })
+        // if (data.addingtags == undefined)   return res.status(400).send({ status: false, messaage: "Pleage provide valid title" })
+        // if (data.addingasubcategory == undefined)   return res.status(400).send({ status: false, messaage: "Pleage provide valid addingasubcategory" })
+
+        // if (!isValid(data.title))   return res.status(400).send({ status: false, messaage: " invalid title" })
+        // if (!isValid(data.body))  return res.status(400).send({ status: false, messaage: " invalid body" })  
+        // if (!isValid(data.addingtags))  return res.status(400).send({ status: false, messaage: " invalid adding tags" })
+        // if (!isValid(data.addingasubcategory))  return res.status(400).send({ status: false, messaage: " invalid adding a subcategory" })
+        
 
         let blog = await blogModel.findById(blogId);
 
