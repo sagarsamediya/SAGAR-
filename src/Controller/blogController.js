@@ -1,8 +1,7 @@
 let blogModel= require('../Model/blogModel')
 const  mongoose = require("mongoose")
 
-const  mongoose = require("mongoose")
-let blogModel= require('../Model/blogModel')
+
 const { query } = require('express');
 
 
@@ -138,10 +137,10 @@ const updateBlog = async function (req, res) {
         let blogId = req.params.blogId
        
 
-        if(!Object.keys(req.body).length) 
-            return res.status(400).send({status: false, msg: "No data provided to update."})
-        if(!mongoose.isValidObjectId(req.params.blogId))
-            return res.status(400).send({status: false, msg: "Invalid Blog objectId."})
+        // if(!Object.keys(req.body).length) 
+        //     return res.status(400).send({status: false, msg: "No data provided to update."})
+        // if(!mongoose.isValidObjectId(req.params.blogId))
+        //     return res.status(400).send({status: false, msg: "Invalid Blog objectId."})
         // if (data.title == undefined)   return res.status(400).send({ status: false, messaage: "Pleage provide valid title" })
         // if (data.body == undefined)   return res.status(400).send({ status: false, messaage: "Pleage provide valid title" })
         // if (data.addingtags == undefined)   return res.status(400).send({ status: false, messaage: "Pleage provide valid title" })
@@ -195,6 +194,7 @@ const deleteById = async function (req, res) {
       res.status(400).send({status:false,msg:"This data is not publised "})
   }  
 };
+
 
 // delete using query params --->check
 
@@ -252,26 +252,14 @@ const deleteBlog = async function (req, res) {
 
 
 };
-module.exports.getBlogs =getBlogs
-module.exports.updateBlog = updateBlog;
-module.exports.deleteBlog = deleteBlog;
-module.exports.createBlog = createBlog;
-module.exports.deleteById=deleteById;
-//const blogModel = require("../Model/blogModel")
 
-// ------------------------------**------------------------**----------------------**-------------------
-
-  // module.exports.createBlog = createBlog
-
-  // module.exports.getBlogs =getBlogs
-
-  // module.exports.updateBlog = updateBlog
-
-  // module.exports.deleteBlogs = deleteBlogs
-  
-  // module.exports.deleteBlog = deleteBlog
 
 module.exports = {
     getBlogs, deleteBlog, createBlog, updateBlog , deleteById
 }
+
+// ------------------------------**------------------------**----------------------**-------------------
+
+
+
 
