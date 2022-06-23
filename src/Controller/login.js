@@ -12,17 +12,6 @@ const login = async function (req, res) {
   let email = req.body.email;
   let password = req.body.password;
 
-<<<<<<< HEAD
-    let token = jwt.sign(
-        {
-          authorId: user._id.toString(),
-          batch: "radon",
-        },
-        "project1"
-      );
-      res.setHeader("x-api-key", token);
-      res.status(200).send({ status: true, token: token });
-=======
   let user = await authorModel.findOne({ email: email, password: password });
   if (!user)
     return res.status(401).send({
@@ -41,7 +30,6 @@ const login = async function (req, res) {
   // if token cretead then set it in header and send in the responce
   res.setHeader("x-api-key", token);
   res.status(200).send({ status: true, token: token });
->>>>>>> 8889222849ce4f740fce20adc35edf3b8ea8c437
 }
 
 // ================================================ ** Exprots all the modules **===================================================
