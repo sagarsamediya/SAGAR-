@@ -10,7 +10,6 @@ const authentication = function (req, res, next) {
     if (!(req.headers["x-api-key"])) {
         return res.status(401).send({ status: false, msg: "token must be present" })
     }
- 
     next()
 
 };
@@ -23,7 +22,7 @@ const isVerifyToken = function (req, res, next) {
         if (!decodedToken) {
             res.status(401).send({ status: false, msg: "token is invalid" });
         }
-         next()
+        next()
     } catch (err) {
         res.status(401).send({ status: false, msg: "token is invalid" });
     }
@@ -35,26 +34,12 @@ const authorise = async function (req, res, next) {
         let token = req.headers["x-api-key"]
         if (!token) return res.status(401).send({ status: false, msg: "token must be present " })
         let decodedToken = jwt.verify(token, "project1")
-        decodedToken={
-            // authorId:"" login 
-        }
-        let userToBeModified = req.params.blogId
-        // params-->id
-        // db -->id--->yes --no
 
+        let userToBeModified = req.params.blogId
         let blogData = await blogModel.findById(userToBeModified)
-        blogData={
-            _id:"",
-            title:"",
-            authorId:"",
-        }
-        if(!blogData) return res.status(401).send({ status: false, msg: "Invalid Blog Id" })
-      
         let userLoggedIn = decodedToken.authorId
-    
-        // convert objectId to String
-       let authorId = blogData.authorId.toString()
-        if ( authorId!= userLoggedIn)
+
+        if (blogData.authorId != userLoggedIn)
             return res.status(403).send({ status: false, msg: 'User logged is not allowed to modify the requested users data' })
     }
     catch (err) {
@@ -64,27 +49,6 @@ const authorise = async function (req, res, next) {
     next()
 };
 
+// ================================================ ** Exprots all modules here **===================================================
 
-const authForDelQuery = async function(req,res,next)
-{
-    let token = req.headers["x-api-key"]
-    let decodedToken = jwt.verify(token, "project1")
-    let queryAuthorId = req.query.authorId
-       let filter =req.query
-       filter.authorId = decodedToken.authorId
-       filter.isDeleted=false
-       filter.isPublised=false
-
-    if(filter.blogId) return res.status(400).send({status:false,msg:"can't find by blogId"})
-    if(queryAuthorId != decodedToken.authorId) return res.status(403).send({status:false, msg:`you are not Authorise to access data by using this authorId: ${queryAuthorId}`})
-    
-    let data= await blogModel.updateMany(filter,{$set:{isDeleted:true}},{new:true})
-
-    
-    res.send({data:data})
-
-}
-
-//================================================ ** Exprots all modules here ** ===================================================
-
-module.exports = { authentication, authorise, isVerifyToken,authForDelQuery }
+module.exports = { authentication, authorise, isVerifyToken }
