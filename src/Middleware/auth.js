@@ -35,10 +35,19 @@ const authorise = async function (req, res, next) {
         let token = req.headers["x-api-key"]
         if (!token) return res.status(401).send({ status: false, msg: "token must be present " })
         let decodedToken = jwt.verify(token, "project1")
-
+        decodedToken={
+            // authorId:"" login 
+        }
         let userToBeModified = req.params.blogId
+        // params-->id
+        // db -->id--->yes --no
 
         let blogData = await blogModel.findById(userToBeModified)
+        blogData={
+            _id:"",
+            title:"",
+            authorId:"",
+        }
         if(!blogData) return res.status(401).send({ status: false, msg: "Invalid Blog Id" })
       
         let userLoggedIn = decodedToken.authorId
