@@ -223,18 +223,23 @@ const deleteBlog = async function (req, res) {
             authorId: authorTokenId,
             ...query
         };
+        if(queryAuthorId)
+        {
+            if (!mongoose.Types.ObjectId.isValid(queryAuthorId)) {
+                return res.status(404).send({ status: false, msg: "Please provide a Valid AuthorId" })
+            }
+        }
+
 
         if (filter.blogId) return res.status(400).send({ status: false, msg: "can't find by blogId" })
         if (queryAuthorId) {
-            if (queryAuthorId != decodedToken.authorId) return res.status(403).send({ status: false, msg: `you are not Authorise to access data by using this authorId: ${queryAuthorId}` })
+            if (queryAuthorId !=authorTokenId) return res.status(403).send({ status: false, msg: `you are not Authorise to access data by using this authorId: ${queryAuthorId}` })
         }
         if (isValidRequestBody(query)) {
             const { authorId, category, subcategory, tags } = query
 
             if (isValid(category)) {
                 filter['category'] = category.trim()
-
-
 
             }
             if (isValid(authorId)) {
@@ -256,22 +261,12 @@ const deleteBlog = async function (req, res) {
 
         let deletedData = await blogModel.updateMany(filter, { $set: { isDeleted: true } })
 
-        res.status(200).send({ status: true, data: deletedData });
+        res.status(200).send({ status: true, data: "deletedData" });
     }
     catch (error) {
-        res.status(500).send({ status: false, err: error.message });
+        res.status(500).send({ status: false, msg: "error message" });
     }
 }
-
-
-
-
-
-
-
-
-
-
 
 // ================================================ ** Exprots all modules here **===================================================
 
