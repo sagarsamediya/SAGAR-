@@ -12,8 +12,6 @@ app.use(bodyParser.urlencoded({ extended: true }));
 
 mongoose.connect("mongodb+srv://SagarSamediya:sagar@cluster0.p5frd.mongodb.net/project1?retryWrites=true&w=majority",
     { useNewUrlParser: true })
-
-
     .then(() => console.log("MongoDb is connected"))
     .catch(err => console.log(err))
 
