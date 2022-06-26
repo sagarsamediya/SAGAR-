@@ -246,8 +246,9 @@ const deleteBlog = async function (req, res) {
         if(req.query.tags=='' || req.query.tags) return res.status(400).send({ status: false, msg: "Tags field should not be empty" })
         if(req.query.subcategory=='' || req.query.subcategory) return res.status(400).send({ status: false, msg: "Subcategory field should not be empty" })
         if(req.query.category=='' || req.query.category) return res.status(400).send({ status: false, msg: "category field should not be empty" })
+        if(req.query.body || req.query.body =='' ) return res.status(400).send({status:false, msg:"You can not delete document by using body"})
+        if(req.query.title || req.query.title =='' ) return res.status(400).send({status:false, msg:"You can not delete document by using title"})
 
-        
         if (filter.blogId) return res.status(400).send({ status: false, msg: "can't find by blogId" })
         if (queryAuthorId) {
             if (queryAuthorId != authorTokenId) return res.status(403).send({ status: false, msg: `you are not Authorise to access data by using this authorId: ${queryAuthorId}` })

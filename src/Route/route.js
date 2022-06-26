@@ -3,7 +3,7 @@ const authorController = require('../Controller/authorController');
 const blogController = require('../Controller/blogController');
 const loginController = require('../Controller/login')
 const auth = require('../Middleware/auth')
-const router = express.Router();
+const router = express();
 
 
 // create Author API
