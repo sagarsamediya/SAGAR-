@@ -1,6 +1,6 @@
-const express = require("express");
-const router =express.Router();
-
+const express = require('express');
+// const router =express.Router();
+const router = express();
 
 
 
@@ -24,3 +24,6 @@ router.post("/books/:bookId/review",)
 router.put("/books/:bookId/review/:reviewId",)
 
 router.delete("/books/:bookId/review/:reviewId",)
+
+
+module.exports = router;
