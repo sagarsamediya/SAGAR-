@@ -3,25 +3,25 @@ const ObjectId = mongoose.Schema.type.ObjectId
 
 const booksSchema = new mongoose.Schema({
 
-    title: { type: string, required: true, unique: true },
+    title: { type: String, required: true, unique: true,trim:true },
 
-    excerpt: { type: string, required: true },
+    excerpt: { type: String, required: true,trim:true },
 
-    userId: { type: ObjectId, required: true, ref: "user" },
+    userId: { type: ObjectId, required: true, ref: "user",trim:true },
 
-    ISBN: { type: string, required: true, unique: true },
+    ISBN: { type: String, required: true, unique: true,trim:true },
 
-    category: { type: string, required: true },
+    category: { type: String, required: true,trim:true },
 
-    subcategory: [{ type: string, required: true }],
+    subcategory: [{ type: String, required: true,trim:true }],
 
-    reviews: { type: number, default: 0 },
+    reviews: { type: number, default: 0 ,trim:true}, // 1-10
 
     deletedAt: { type: Date },
 
-    isDeleted: { type: Boolean, default: false },
+    isDeleted: { type: Boolean, default: false},
 
-    releasedAt: { type: Date, required: true, format: "YYYY-MM-DD" },
+    releasedAt: { type: Date, required: true},
 
 }, { timestamps: true })
 
