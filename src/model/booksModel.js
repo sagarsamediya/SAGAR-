@@ -3,17 +3,17 @@ const ObjectId = mongoose.Schema.type.ObjectId
 
 const booksSchema = new mongoose.Schema({
 
-    title: { type: string, required: true, unique: true,trim:true },
+    title: { type: String, required: true, unique: true,trim:true },
 
-    excerpt: { type: string, required: true,trim:true },
+    excerpt: { type: String, required: true,trim:true },
 
     userId: { type: ObjectId, required: true, ref: "user",trim:true },
 
-    ISBN: { type: string, required: true, unique: true,trim:true },
+    ISBN: { type: String, required: true, unique: true,trim:true },
 
-    category: { type: string, required: true,trim:true },
+    category: { type: String, required: true,trim:true },
 
-    subcategory: [{ type: string, required: true,trim:true }],
+    subcategory: [{ type: String, required: true,trim:true }],
 
     reviews: { type: number, default: 0 ,trim:true}, // 1-10
 

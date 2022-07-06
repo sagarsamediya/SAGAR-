@@ -5,13 +5,13 @@ const reviewSchema = new mongoose.Schema({
 
     bookId: { type: ObjectId, required: true, ref: "book",trim:true},
 
-    reviewedBy: { type: string, required: true, default: 'Guest', value: string,trim:true },
+    reviewedBy: { type: String, required: true, default: 'Guest', value: String,trim:true },
 
     reviewedAt: { type: Date, required: true,trim:true },
 
     rating: { type: number, required: true,trim:true }, //rating 1-5 dena hai
 
-    review: { type: string,trim:true },
+    review: { type: String,trim:true },
 
     isDeleted: { type: Boolean, default: false ,trim:true},
 
