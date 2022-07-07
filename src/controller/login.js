@@ -4,11 +4,11 @@ const jwt = require("jsonwebtoken")
 const userLogin = async function(req,res){
     let email=req.body.email;
     let password=req.body.password
-    if(!(email && password)) return res.status(400).send({status:false,msg:"Please enter valid email & password"})
+    if(!(email && password)) return res.status(400).send({status:false,msg:"No such user exist"})
 
-    let user = await userModel.findone({email:email,password:password})
-    if(!user) return res.status(400).send({status:false,msg:"No such user exist"})
-
+    let user = await userModel.findOne({email:email,password:password});
+    if(!user) return res.status(400).send({status:false,msg:"Please enter valid email & password"})
+    
     let token = jwt.sign(
         {
             userId: user._id.toString(),
