@@ -24,14 +24,14 @@ const authentication = function (req, res, next) {
   }
 };
 
-const authorization = function(req,res,next){
-    try{
-    req.params.bookId != req.loggedInUser
-     return res.status(403).send({status:false,msg:'unauthorize user'})
+// const authorization = function(req,res,next){
+//     try{
+//     //req.params.bookId != req.loggedInUser
+//       res.status(403).send({status:false,msg:'unauthorize user'})
+//       next();
+// }catch (err) {
+//     return res.status(500).send({ msg: "Error", error: err.message });
+//   }
+// }
 
-}catch (err) {
-    return res.status(500).send({ msg: "Error", error: err.message });
-  }
-}
-
-module.exports = { authentication,authorization }
+module.exports = { authentication }

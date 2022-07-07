@@ -1,5 +1,5 @@
 const mongoose = require('mongoose')
-const ObjectId = mongoose.Schema.type.ObjectId
+const ObjectId = mongoose.Schema.Types.ObjectId
 
 const reviewSchema = new mongoose.Schema({
 
@@ -9,7 +9,7 @@ const reviewSchema = new mongoose.Schema({
 
     reviewedAt: { type: Date, required: true,trim:true },
 
-    rating: { type: number, required: true,trim:true }, //rating 1-5 dena hai
+    rating: { type: Number, required: true,trim:true }, //rating 1-5 dena hai
 
     review: { type: String,trim:true },
 
@@ -17,4 +17,4 @@ const reviewSchema = new mongoose.Schema({
 
 }, { timestamps: true })
 
-module.exports = mongoose.Model('review', reviewSchema)
+module.exports = mongoose.model('review', reviewSchema)

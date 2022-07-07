@@ -13,18 +13,21 @@ router.post("/register",userController.createUser)
  router.post("/login",login.userLogin)
  //-----------------------------------## Book api ##-------------------------------------------------//
 
-router.post("/books",bookController.createBookDoc)
+router.post("/books",middleware.authentication,bookController.createBookDoc)
             
 
 // router.post("/books",)
 
 // router.get("/books",)
 
-// router.get("/books/:bookId",)
+ router.get("/books/:bookId",middleware.authentication,bookController.getBookByBookId);
 
-// router.put("/books/:bookId",)
+ router.put("/books/:bookId",middleware.authentication,bookController.updateBook)
 
 // router.delete("/books/:bookId",)
+
+
+                     // review's Api
 
 // router.post("/books/:bookId/review",)
 
