@@ -5,6 +5,7 @@ const { isValidObjectId } = require("mongoose");
 
 
 
+//-----------------##---------## create Books documents ##------------------##----------------------//
 
 const createBookDoc = async function (req, res) {
     try {
@@ -33,7 +34,6 @@ const createBookDoc = async function (req, res) {
     }
 };
 
-module.exports={createBookDoc}
 // --------------***-----------------***---------------------***------------------
 //  DELETE /books/:bookId
 
@@ -53,3 +53,7 @@ const deleteBookById = async (rerq, res) => {
         return res.status(500).send({status : false , msg : "error"})
     }
 }
+
+
+
+module.exports={createBookDoc,deleteBookById}
