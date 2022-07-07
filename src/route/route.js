@@ -24,7 +24,7 @@ router.post("/books",middleware.authentication,bookController.createBookDoc)
 
  router.put("/books/:bookId",middleware.authentication,bookController.updateBook)
 
-// router.delete("/books/:bookId",)
+ router.delete("/books/:bookId",middleware.authentication,bookController.deleteBookById)
 
 
                      // review's Api
