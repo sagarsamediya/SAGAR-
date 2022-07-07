@@ -49,8 +49,9 @@ const deleteBookById = async (req, res) => {
         if (!bookId)   return res.status(400).send({ status: false, msg: "bookId must be present in param " })
 
         if(!isValidObjectId(bookId)) return res.status(400).send({status:false, msg:"bookId is not valid"})
-
+        
         const book = await bookModel.find({_id: bookId, isDeleted: false})
+
         if(!book) return res.status(404).send({status: false, msg: "book not exist or allerady deleted"})
                     await bookModel.findByIdAndUpdate({_id: bookId},{isDeleted: true})
     
