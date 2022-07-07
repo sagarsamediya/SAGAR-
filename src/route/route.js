@@ -13,7 +13,7 @@ router.post("/register",userController.createUser)
  router.post("/login",login.userLogin)
  //-----------------------------------## Book api ##-------------------------------------------------//
 
-router.post("/books",middleware.authentication,bookController.createBookDoc)
+router.post("/books",bookController.createBookDoc)
             
 
 // router.post("/books",)

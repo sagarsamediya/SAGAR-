@@ -17,7 +17,7 @@ const booksSchema = new mongoose.Schema({
 
     reviews: { type: Number, default: 0 ,trim:true}, // 1-10
 
-    deletedAt: { type: Date },
+    deletedAt: { type: Date},
 
     isDeleted: { type: Boolean, default: false},
 
