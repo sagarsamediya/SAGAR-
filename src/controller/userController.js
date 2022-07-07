@@ -21,7 +21,7 @@ const createUser = async function (req, res) {
         if (!isValid(phone)) return res.status(400).send({ status: false, msg: "phone is required" })
         if (!isValid(email)) return res.status(400).send({ status: false, msg: "Email is required" })
         if (!isValid(password)) return res.status(400).send({ status: false, msg: "password is required" })
-        if (!isValid(address)) return res.status(400).send({ status: false, msg: "address is required" })
+        // if (!isValid(address)) return res.status(400).send({ status: false, msg: "address is required" })
 
         //---------title validation
         if (!["Mr", "Miss", "Mrs"].includes(title)) {
