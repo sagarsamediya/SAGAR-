@@ -29,11 +29,7 @@ const isValidRequestBody = (data) =>{
     return true 
 }
 
-const isValidOjectId = function(id)
-{
-    if(mongoose.Types.ObjectId.isValid(id)) return true;
-    return false;
-}
+
 const isValidRegxDate = function(date){
     if(/^\d{4}\-(0?[1-9]|1[012])\-(0?[1-9]|[12][0-9]|3[01])$/gm.test(date)) return true;
     return false;
@@ -44,4 +40,9 @@ const isValidRegxISBN = function(isbn){
     return true;
 }
 
-module.exports={isValid,isValidName,isValidEmail,isValidMobile,isValidPassword,isValidRequestBody,isValidOjectId,isValidRegxDate,isValidRegxISBN }
+const isValidOjectId = function(id){
+    if(mongoose.isValidObjectId(id)) return true;
+    return false;
+}
+
+module.exports={isValid,isValidName,isValidEmail,isValidMobile,isValidPassword,isValidRequestBody,isValidRegxDate,isValidRegxISBN,isValidOjectId }
