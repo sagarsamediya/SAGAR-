@@ -18,7 +18,7 @@ const isValidMobile=(mobile)=>{
     return true
 }
 const isValidPassword=(password)=>{
-    if(/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d.*)(?=.*\W.*)[a-zA-Z0-9\S]{8,15}$/.test(password))
+    if(/^[a-zA-Z]\w{8,15}$/.test(password)) //The password's first character must be a letter
     return true
 }
 module.exports={isValid,isValidName,isValidEmail,isValidMobile,isValidPassword}
