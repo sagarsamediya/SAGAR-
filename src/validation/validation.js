@@ -1,3 +1,5 @@
+
+
 const isValid= function(value){
     if (typeof value=== "undefined" || typeof value === "null") return false
     if (typeof value==="string" && value.trim().length===0) return false
@@ -21,4 +23,7 @@ const isValidPassword=(password)=>{
     if(/^[a-zA-Z]\w{8,15}$/.test(password)) //The password's first character must be a letter
     return true
 }
-module.exports={isValid,isValidName,isValidEmail,isValidMobile,isValidPassword}
+const isValidRequestBody = (requestBody) =>{
+    return Object.keys(requestBody).length > 0
+}
+module.exports={isValid,isValidName,isValidEmail,isValidMobile,isValidPassword,isValidRequestBody }

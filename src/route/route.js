@@ -5,8 +5,6 @@ const login = require("../controller/login")
 
 
 
-
-
 router.post("/register",userController.createUser)
 
  router.post("/login",login.userLogin)
@@ -27,4 +25,4 @@ router.post("/register",userController.createUser)
 
 // router.delete("/books/:bookId/review/:reviewId",)
 
-module.exports=router
+module.exports=router;
