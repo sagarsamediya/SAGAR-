@@ -5,12 +5,12 @@ const booksModel = require('../controller/bookController')
 
 const authentication = function (req, res, next) {
   try {
-    let token = req.headers["x-api-key"].toLowerCase();
+    let token = req.headers["x-api-key"];
     
     if (!token) return res.status(400).send({ status: false, msg: "token must be present" });
 
     
-    if (token.length != token) return res.status(400).send({ status: false, msg: "invalid token" });
+    //if (token.length != token) return res.status(400).send({ status: false, msg: "invalid token" });
     let decodedToken = jwt.verify(token, "project_3_Group-64");
     //console.log(decodedToken)
     if (!decodedToken) return res.status(404).send({ status: false, msg: "token is not valid" })

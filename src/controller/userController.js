@@ -21,7 +21,7 @@ const createUser = async function (req, res) {
         if (!isValid(phone)) return res.status(400).send({ status: false, msg: "phone is required" })
         if (!isValid(email)) return res.status(400).send({ status: false, msg: "Email is required" })
         if (!isValid(password)) return res.status(400).send({ status: false, msg: "password is required" })
-        if (!isValid(address)) return res.status(400).send({ status: false, msg: "address is required" })
+        // if (!isValid(address)) return res.status(400).send({ status: false, msg: "address is required" })
 
         //---------title validation
         if (!["Mr", "Miss", "Mrs"].includes(title)) {
@@ -49,7 +49,7 @@ const createUser = async function (req, res) {
 
          //--------match password with regex
          if (!isValidPassword(password)) {
-            return res.status(400).send({ status: false, msg: "Please use first letter in uppercase, lowercase and number with min. 8 length" })
+            return res.status(400).send({ status: false, msg: "Please use first letter in uppercase, lowercase and number with min. 8 lengthand maxi 15 length" })
         }
 
         
