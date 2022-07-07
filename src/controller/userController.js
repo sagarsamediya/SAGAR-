@@ -1,22 +1,14 @@
 const { validate } = require("../model/userModel");
 const userModel = require("../model/userModel");
 
-const isValid = function (value) {
-    if (typeof value === 'undefined' || value === null) return false
-    if (typeof value === 'string' && value.trim().length === 0) return false
-    return true;
-}
 
-// globelly function to validate request body is empty or not
-const isValidRequestBody = function (requestBody) {
-    return Object.keys(requestBody).length > 0
-}
+const {isValid,isValidName,isValidEmail,isValidMobile,isValidPassword,isValidRequestBody} =require("../validation/validation")
 
 
 const createUser = async function (req, res) {
     try {
         let userBody = req.body;
-
+       
 
         if (!isValidRequestBody(userBody)) {
             return res.status(400).send({ status: false, msg: "userDetails must be provided" });
@@ -37,12 +29,12 @@ const createUser = async function (req, res) {
         }
 
         //------match name with regex
-        if (!(/^[a-zA-Z]+(\s[a-zA-Z]+)?$/).test(name)) {
+        if (!isValidName(name))
             return res.status(400).send({ status: false, msg: "Please use valid type of name" })
-        }
+        
 
         //-------match phone with regex
-        if (!(/^\d{10}$/).test(phone)) {
+        if (!isValidMobile(phone)) {
             return res.status(400).send({ status: false, msg: "please provide a valid phone Number" })
         }
         let duplicatePhone = await userModel.findOne({ phone: phone })
@@ -51,12 +43,12 @@ const createUser = async function (req, res) {
         }
 
         //-------match email with regex
-        if (!(/^\w+@[a-zA-Z_]+?\.[a-zA-Z]{2,20}$/).test(email)) {
+        if (!isValidEmail(email)) {
             return res.status(400).send({ status: false, msg: "Please provide a email in correct format" })
         }
 
          //--------match password with regex
-         if (!(/^(?=.*?[A-Z])(?=.*?[a-z])(?=.*?[0-9])(?=.*?[#?!@$%^&*-]).{8,15}$/.test(userBody.password))) {
+         if (!isValidPassword(password)) {
             return res.status(400).send({ status: false, msg: "Please use first letter in uppercase, lowercase and number with min. 8 length" })
         }
 
