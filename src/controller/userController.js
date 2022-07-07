@@ -49,7 +49,7 @@ const createUser = async function (req, res) {
 
          //--------match password with regex
          if (!isValidPassword(password)) {
-            return res.status(400).send({ status: false, msg: "Please use first letter in uppercase, lowercase and number with min. 8 length" })
+            return res.status(400).send({ status: false, msg: "Please use first letter in uppercase, lowercase and number with min. 8 lengthand maxi 15 length" })
         }
 
         
