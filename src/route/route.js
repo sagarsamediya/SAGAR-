@@ -4,10 +4,13 @@ const userController = require("../controller/userController")
 const login = require("../controller/login")
 
 
+            // user Api's
 
 router.post("/register",userController.createUser)
 
  router.post("/login",login.userLogin)
+
+             // Book Api's
 
 // router.post("/books",)
 
