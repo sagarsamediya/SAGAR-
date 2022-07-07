@@ -1,6 +1,8 @@
 const express = require("express");
 const router =express.Router();
 const userController = require("../controller/userController")
+const bookController =require("../controller/bookController")
+const middleware = require("../middleware/auth")
 const login = require("../controller/login")
 
 
@@ -9,7 +11,7 @@ router.post("/register",userController.createUser)
 
  router.post("/login",login.userLogin)
 
-// router.post("/books",)
+router.post("/books",middleware.authenticate,bookController.createBookDoc)
 
 // router.get("/books",)
 

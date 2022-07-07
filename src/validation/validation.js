@@ -24,6 +24,6 @@ const isValidPassword=(password)=>{
     return true
 }
 const isValidRequestBody = (requestBody) =>{
-    return Object.keys(requestBody).length > 0
+    return Object.keys(requestBody).length == 0
 }
 module.exports={isValid,isValidName,isValidEmail,isValidMobile,isValidPassword,isValidRequestBody }
