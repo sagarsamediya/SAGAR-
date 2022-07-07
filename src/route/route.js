@@ -6,12 +6,17 @@ const middleware = require("../middleware/auth")
 const login = require("../controller/login")
 
 
+//---------------------------------- *** user api ***-----------------------------------------//
 
 router.post("/register",userController.createUser)
 
  router.post("/login",login.userLogin)
+ //-----------------------------------## Book api ##-------------------------------------------------//
 
-router.post("/books",middleware.authenticate,bookController.createBookDoc)
+router.post("/books",middleware.authentication,bookController.createBookDoc)
+            
+
+// router.post("/books",)
 
 // router.get("/books",)
 
