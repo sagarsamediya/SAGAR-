@@ -150,7 +150,53 @@ const updateBook = async function (req, res) {
     }
 };
 
-module.exports={createBookDoc,deleteBookById,getBookByBookId,updateBook }
+
+const getBooks = async function (req, res) {
+    try {
+      let userQuery = req.query;
+      let filter = {isDeleted: false,};
+  
+      if (!isValidReqBody(userQuery)) {
+        return res.status(400).send({status: true,message:" please provide valid data"});
+      }
+      const { userId, category, subcategory } = userQuery;
+      if (userId) {
+        if (!isValidObjectId(userId)) {
+          return res
+            .status(400)
+            .send({ status: false, message: "Invalid userId" });
+        }
+
+        if (isValid(userId)) {
+          filter["userId"] = userId;
+        }
+      }
+      if (isValid(category)) {
+        filter["category"] = category.trim();
+      }
+      if (subcategory) {
+        const subCategoryArray = subcategory.trim().split(",").map((s) => s.trim());
+        filter["subcategory"] = { $all: subCategoryArray };
+      }
+
+      let findBook = await bookModel.find(filter).select({title: 1,book_id: 1,excerpt: 1,userId: 1,category: 1,releasedAt: 1,reviews: 1,});
+      if (Array.isArray(findBook) && findBook.length === 0) {
+        return res
+          .status(404)
+          .send({ status: false, message: "Books Not Found" });
+      }
+      const sortedBooks = findBook.sort((a, b) => a.title.localeCompare(b.title));
+      res.status(200).send({ status: true, message: "Books list", data: sortedBooks });
+    }
+     catch (err) {
+      res.status(500).send({status: false,message: "Internal Server Error",error: err.message,});
+    }
+  };
+
+
+
+
+module.exports={createBookDoc,getBooks,deleteBookById,getBookByBookId,updateBook }
 
 
 

@@ -15,10 +15,7 @@ router.post("/register",userController.createUser)
 
 router.post("/books",middleware.authentication,bookController.createBookDoc)
             
-
-// router.post("/books",)
-
-// router.get("/books",)
+router.get("/books",middleware.authentication,bookController.getBooks)
 
  router.get("/books/:bookId",middleware.authentication,bookController.getBookByBookId);
 
@@ -26,8 +23,7 @@ router.post("/books",middleware.authentication,bookController.createBookDoc)
 
  router.delete("/books/:bookId",middleware.authentication,bookController.deleteBookById)
 
-
-                     // review's Api
+//----------------------##  review's Api ##-----------------------------------------------------------//
 
 // router.post("/books/:bookId/review",)
 
