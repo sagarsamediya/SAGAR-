@@ -38,6 +38,7 @@ const createBookDoc = async function (req, res) {
         res.status(201).send({ status: true, data: newdoc });
     }
     catch (err) {
+        console.log(err)
         res.status(500).send({ status: false, msg: "Internal server error" })
     }
 };
@@ -51,13 +52,15 @@ const deleteBookId = async (rerq, res) => {
         //  bookId is present or not
         if (!bookId)   return res.status(400).send({ status: false, msg: "bookId must be present in param " })
 
+        // bookId is a valid objectId
         if(!isValidObjectId(bookId)) return res.status(400).send({status:false, msg:"bookId is not valid"})
 
         const book = await bookModel.findOne({_id: bookId, isDeleted: false})
         if(!book) return res.status(404).send({status: false, msg: "book not exist or allerady deleted"})
 
+        // set the isDeleted true of that book with deleted date
         await bookModel.findOneAndUpdate({_id: bookId}, {$set: {isDeleted:true, deletedAt:new Date()}})
-       
+        await reviewModel.findByIdAndUpdate({bookId:bookId},{$set:{isDeleted:true}})
         return res.status(200).send({status: true, message: "Success"})
     }
     catch(err){
