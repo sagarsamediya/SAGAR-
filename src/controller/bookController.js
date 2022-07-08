@@ -177,7 +177,7 @@ const getBooks = async function (req, res) {
   // --------------***-----------------***---------------------***------------------
 //  DELETE /books/:bookId
 
-const deleteBookById = async (req, res) => {
+const deleteBookId = async (req, res) => {
     try{
         let  bookId = req.params.bookId
         //  bookId is present or not
@@ -207,7 +207,7 @@ const deleteBookById = async (req, res) => {
 
 
 
-module.exports={createBookDoc,getBooks,deleteBookById,getBookByBookId,updateBook }
+module.exports={createBookDoc,getBooks,getBookByBookId,updateBook,deleteBookId }
 
 
 

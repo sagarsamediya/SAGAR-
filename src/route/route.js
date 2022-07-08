@@ -21,7 +21,7 @@ router.get("/books",middleware.authentication,bookController.getBooks)
 
  router.put("/books/:bookId",middleware.authentication,bookController.updateBook)
 
- router.delete("/books/:bookId",middleware.authentication,bookController.deleteBookById)
+ router.delete("/books/:bookId",middleware.authentication,bookController.deleteBookId)
 
 //----------------------##  review's Api ##-----------------------------------------------------------//
 
