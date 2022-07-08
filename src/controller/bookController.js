@@ -188,13 +188,11 @@ const deleteBookId = async (req, res) => {
 
         const book = await bookModel.findOne({_id: bookId, isDeleted: false})
         if(!book) return res.status(404).send({status: false, msg: "book not exist or allerady deleted"})
-                    await bookModel.findByIdAndUpdate({_id: bookId},{isDeleted: true})
-    
-        res.status(200).send({status:true,msg:'successfully deleted'})
+                   
 
         // set the isDeleted true of that book with deleted date
         await bookModel.findOneAndUpdate({_id: bookId}, {$set: {isDeleted:true, deletedAt:new Date()}})
-        await reviewModel.findByIdAndUpdate({bookId:bookId},{$set:{isDeleted:true}})
+        // await reviewModel.findByIdAndUpdate({bookId:bookId},{$set:{isDeleted:true}})
         return res.status(200).send({status: true, message: "Success"})
     }
     catch(err){
