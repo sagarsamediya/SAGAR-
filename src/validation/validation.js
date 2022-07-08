@@ -1,3 +1,4 @@
+const mongoose=require("mongoose")
 
 
 const isValid= function(value){
@@ -23,7 +24,25 @@ const isValidPassword=(password)=>{
     if(/^[a-zA-Z]\w{8,15}$/.test(password)) //The password's first character must be a letter
     return true
 }
-const isValidRequestBody = (requestBody) =>{
-    return Object.keys(requestBody).length >0
+const isValidRequestBody = (data) =>{
+    if(Object.keys(data).length==0) return false
+    return true 
 }
-module.exports={isValid,isValidName,isValidEmail,isValidMobile,isValidPassword,isValidRequestBody }
+
+
+const isValidRegxDate = function(date){
+    if(/^\d{4}\-(0?[1-9]|1[012])\-(0?[1-9]|[12][0-9]|3[01])$/gm.test(date)) return true;
+    return false;
+}
+
+const isValidRegxISBN = function(isbn){
+    if(/^(?=(?:\D*\d){10}(?:(?:\D*\d){3})?$)[\d-]+$/.test(isbn)) return false;
+    return true;
+}
+
+const isValidOjectId = function(id){
+    if(mongoose.isValidObjectId(id)) return true;
+    return false;
+}
+
+module.exports={isValid,isValidName,isValidEmail,isValidMobile,isValidPassword,isValidRequestBody,isValidRegxDate,isValidRegxISBN,isValidOjectId }
