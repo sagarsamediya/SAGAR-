@@ -15,19 +15,15 @@ router.post("/register",userController.createUser)
 
 router.post("/books",middleware.authentication,bookController.createBookDoc)
             
-
-// router.post("/books",)
-
-// router.get("/books",)
+router.get("/books",middleware.authentication,bookController.getBooks)
 
  router.get("/books/:bookId",middleware.authentication,bookController.getBookByBookId);
 
  router.put("/books/:bookId",middleware.authentication,bookController.updateBook)
 
- router.delete("/books/:bookId",middleware.authentication,bookController.deleteBookById)
+ router.delete("/books/:bookId",middleware.authentication,bookController.deleteBookId)
 
-
-                     // review's Api
+//----------------------##  review's Api ##-----------------------------------------------------------//
 
 // router.post("/books/:bookId/review",)
 
