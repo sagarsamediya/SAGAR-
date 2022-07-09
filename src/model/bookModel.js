@@ -5,7 +5,7 @@ const booksSchema = new mongoose.Schema({
 
     title: { type: String, required: true, unique: true,trim:true },
 
-    excerpt: { type: String, required: true,trim:true },
+    excerpt: {type: String, required: true,trim:true },
 
     userId: { type: objectId, required: true, ref:'user',trim:true },
 
@@ -17,7 +17,7 @@ const booksSchema = new mongoose.Schema({
 
     reviews: { type: Number, default: 0 ,trim:true}, // 1-10
 
-    deletedAt: { type: Date},
+    deletedAt: { type: Date,default:null},
 
     isDeleted: { type: Boolean, default: false},
 
