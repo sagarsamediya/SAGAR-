@@ -81,10 +81,10 @@ const createUser = async function (req, res) {
 
         let newUser = await userModel.create(userBody);
         return res.status(201).send({ status: true, msg: "user created successfully", data: newUser })
-    } catch (err) {
-        console.log(err)
+     } catch (err) {
+       console.log(err)
         return res.status(500).send({ status: false, msg: "message error" })
-    }
+     }
 }
 
 module.exports = { createUser }
