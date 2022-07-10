@@ -35,6 +35,7 @@ const createBookDoc = async function (req,res) {
         res.status(201).send({ status: true, data: newdoc });
     }
     catch (err) {
+        console.log(err)
       res.status(500).send({ status: false, msg: "Internal server error" })
     }
 };
@@ -137,15 +138,13 @@ const getBooks = async function (req, res) {
       let userQuery = req.query;
       let filter = {isDeleted: false,};
   
-      if (!isValidReqBody(userQuery)) {
+      if (!isValidRequestBody(userQuery)) {
         return res.status(400).send({status: true,message:" please provide valid data"});
       }
       const { userId, category, subcategory } = userQuery;
       if (userId) {
         if (!isValidObjectId(userId)) {
-          return res
-            .status(400)
-            .send({ status: false, message: "Invalid userId" });
+          return res.status(400).send({ status: false, message: "Invalid userId" });
         }
 
         if (isValid(userId)) {
