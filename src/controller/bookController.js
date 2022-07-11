@@ -150,7 +150,12 @@ const getBooks = async function (req, res) {
         let userQuery = req.query;
         let filter = { isDeleted: false,};
 
-        if (!isValidRequestBody(userQuery)) return res.status(400).send({ status: true, message: " please provide valid data query params" });
+        if(!isValidRequestBody(userQuery)) {
+            let books= await bookModel.find(filter).select({ title: 1, book_id: 1, excerpt: 1, userId: 1, category: 1, releasedAt: 1, reviews: 1, });
+            return res.status(200).send({status:true,data:books})
+        }
+
+        // if (!isValidRequestBody(userQuery)) return res.status(400).send({ status: true, message: " please provide valid data query params" });
     
 
         const { userId, category, subcategory } = userQuery;
