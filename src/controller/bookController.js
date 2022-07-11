@@ -71,19 +71,16 @@ const getBooks = async function (req, res) {
             return res.status(400).send({ status: false, msg: "invalid query parameter" })
 
 
-        if (filter.userId) {
+        if (userId) {
             if (!isValidObjectId(userId)) return res.status(400).send({ status: false, message: "Invalid userId" });
-
-            if (isValid(userId)) {
-                filter["userId"] = userId;
-            }
+            filter["userId"] = userId;
         }
         if (isValid(category)) {
             filter["category"] = category.trim();
         }
         if (isValid(subcategory)) {
             const subCategoryArray = subcategory.trim().split(",").map((s) => s.trim());
-            filter["subcategory"] = { $all: subCategoryArray };
+            filter["subcategory"] = { $in: subCategoryArray };
         };
         // if(userQuery!=filter) return res.status(400).send({status:false,msg:"Invalid input in query params"})
 
