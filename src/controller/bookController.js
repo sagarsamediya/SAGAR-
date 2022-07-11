@@ -6,6 +6,7 @@ const { isValidObjectId } = require("mongoose");
 const mongoose = require("mongoose");
 const ObjectId = require('mongoose').Types.ObjectId
 
+
 //-----------------##---------## create Books documents ##------------------##----------------------//
 
 const createBookDoc = async function (req, res) {
@@ -13,9 +14,10 @@ const createBookDoc = async function (req, res) {
         let data = req.body
 
         if (!isValidRequestBody(data)) return res.status(400).send({ status: false, msg: "data is empty" });
-
+            // destructure
         let { title, excerpt, ISBN, category, subcategory, userId } = data
-
+        
+        
         if (!isValid(title)) return res.status(400).send({ status: false, msg: "title is invalid or empty,required here valid information" });
         if (userId == '' || !userId) return res.status(400).send({ status: false, message: "userId tag is required" });
 
@@ -38,9 +40,10 @@ const createBookDoc = async function (req, res) {
 
         let isExistsuserId = await userModel.findById(userId);
         if (!isExistsuserId) return res.status(400).send({ status: false, msg: `${userId}. This userId is not present in DB` });
-
-
-        let verifyToken = req.loggedInUser
+                                                                                                                                             
+        // authorization 
+    
+       let verifyToken = req.loggedInUser
         if (verifyToken != userId) return res.status(403).send({ status: false, msg: "You are not authorize to createBook from another userId" });
 
         let newdoc = await bookModel.create(data);
@@ -61,20 +64,17 @@ const getBookByBookId = async function (req, res) {
         if (!isValidObjectId(bookId)) {
             return res.status(400).send({ status: false, message: "userId is Invalid" });
         }
-        //   FETCHING BOOK  WITH   BOOK ID
-        const book = await bookModel.findOne({ _id: bookId, isDeleted: false });
+        //   FETCHING BOOK  WITH   BOKK ID
+        const book = await bookModel.findOne({ _id: bookId, isDeleted: false })
         // WHEN  NOT FOUND
         if (!book) {
-            return res.status(404).send({ status: false, mseesge: "book not found" });
+            return res.status(404).send({ status: false, mseesge: "book not found" })
         }
         // FETCHING   REVIEW   FROM   REVIEW   MODEL 
         const review = await reviewModel.find({ bookId: bookId, isDeleted: false }).select({ _id: 1, bookId: 1, reviewedBy: 1, reviewedAt: 1, rating: 1, review: 1 });
+        const { _id, title, excerpt, userId, category, subcategory, isDeleted, reviews, deletedAt, releaseAt, createdAt, updatedAt } = book  // DESTRUCTURING  BOOK  FOR MAKING RESPONSE
 
-        // DESTRUCTURING  BOOK  FOR MAKING RESPONSE
-        const { _id, title, excerpt, userId, category, subcategory, isDeleted, reviews, deletedAt, releaseAt, createdAt, updatedAt } = book
-
-        const data = { _id, title, excerpt, userId, category, subcategory, isDeleted, reviews, deletedAt, releaseAt, createdAt, updatedAt };
-
+        const data = { _id, title, excerpt, userId, category, subcategory, isDeleted, reviews, deletedAt, releaseAt, createdAt, updatedAt }
         data["reviewData"] = review;
         // SENDING   BOOK   LIST 
         res.status(200).send({ status: true, msg: "Book list", data: data });
@@ -82,8 +82,6 @@ const getBookByBookId = async function (req, res) {
         res.status(500).send({ status: false, msg: err.message });
     }
 };
-
-
 // --------------------------------------------***--------------------------------****-------------------------****
 
 const updateBook = async function (req, res) {
