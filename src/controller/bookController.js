@@ -79,10 +79,7 @@ const getBooks = async function (req, res) {
 
         if (userId) {
             if (!isValidObjectId(userId)) return res.status(400).send({ status: false, message: "Invalid userId" });
-
-            if (isValid(userId)) {
-                filter["userId"] = userId;
-            }
+            filter["userId"] = userId;
         }
         if (isValid(category)) {
             filter["category"] = category.trim();
@@ -119,7 +116,7 @@ const getBookByBookId = async function (req, res) {
         const book = await bookModel.findOne({ _id: bookId, isDeleted: false })
         // WHEN  NOT FOUND
         if (!book) {
-            return res.status(404).send({ status: false, mseesge: "book not found" })
+            return res.status(404).send({ status: false, message: "book not found" })
         }
         // FETCHING   REVIEW   FROM   REVIEW   MODEL 
         const review = await reviewModel.find({ bookId: bookId, isDeleted: false }).select({ _id: 1, bookId: 1, reviewedBy: 1, reviewedAt: 1, rating: 1, review: 1 });
