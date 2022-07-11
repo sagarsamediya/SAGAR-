@@ -2,8 +2,10 @@ const express = require('express');
 const bodyParser = require('body-parser'); 
 const route = require('./route/route.js');
 
-const { default: mongoose } = require('mongoose');
+const  mongoose  = require('mongoose');
 const app = express();
+
+//const name =" rahul"
 
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));

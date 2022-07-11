@@ -7,7 +7,10 @@ const isValid= function(value){
     // if(value==null)return false 
     return true
 }
-const isValidName=(name)=>{
+
+
+
+const isValidName=function(name){
     if( /^[-a-zA-Z_:,.' ']{1,100}$/.test(name))
     return true
 }
@@ -24,12 +27,12 @@ const isValidPassword=(password)=>{
     if(/^(?=.*?[A-Z])(?=.*?[a-z])(?=.*?[0-9])(?=.*?[#?!@$%^&*-]).{8,15}$/.test(password)) //The password's first character must be a letter
     return true
 }
-const isValidRequestBody = (data) =>{
+const isValidRequestBody = function(data) {
     if(Object.keys(data).length==0) return false
     return true 
 }
 
-
+let arr = [1,2,3,'rohan']
 const isValidRegxDate = function(date){
     if(/^\d{4}\-(0?[1-9]|1[012])\-(0?[1-9]|[12][0-9]|3[01])$/gm.test(date)) return true;
     return false;
