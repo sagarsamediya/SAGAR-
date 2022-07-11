@@ -14,10 +14,10 @@ const createBookDoc = async function (req, res) {
         let data = req.body
 
         if (!isValidRequestBody(data)) return res.status(400).send({ status: false, msg: "data is empty" });
-            // destructure
+        // destructure
         let { title, excerpt, ISBN, category, subcategory, userId } = data
-        
-        
+
+
         if (!isValid(title)) return res.status(400).send({ status: false, msg: "title is invalid or empty,required here valid information" });
         if (userId == '' || !userId) return res.status(400).send({ status: false, message: "userId tag is required" });
 
@@ -40,10 +40,10 @@ const createBookDoc = async function (req, res) {
 
         let isExistsuserId = await userModel.findById(userId);
         if (!isExistsuserId) return res.status(400).send({ status: false, msg: `${userId}. This userId is not present in DB` });
-                                                                                                                                             
+
         // authorization 
-    
-       let verifyToken = req.loggedInUser
+
+        let verifyToken = req.loggedInUser
         if (verifyToken != userId) return res.status(403).send({ status: false, msg: "You are not authorize to createBook from another userId" });
 
         let newdoc = await bookModel.create(data);
@@ -51,6 +51,51 @@ const createBookDoc = async function (req, res) {
     }
     catch (err) {
         res.status(500).send({ status: false, msg: "Internal server error" });
+    }
+};
+
+// ---------------------------****---  Get Books ------***----------------------------------***---------------
+
+const getBooks = async function (req, res) {
+    try {
+        let userQuery = req.query;
+        let filter = { isDeleted: false, };
+
+        if (!isValidRequestBody(userQuery)) {
+            let books = await bookModel.find(filter).select({ title: 1, book_id: 1, excerpt: 1, userId: 1, category: 1, releasedAt: 1, reviews: 1, });
+            return res.status(200).send({ status: true, data: books })
+        };
+
+        const { userId, category, subcategory } = userQuery;
+        if (!isValid(userId) && !isValid(category) && !isValid(subcategory))
+            return res.status(400).send({ status: false, msg: "invalid query parameter" })
+
+
+        if (filter.userId) {
+            if (!isValidObjectId(userId)) return res.status(400).send({ status: false, message: "Invalid userId" });
+
+            if (isValid(userId)) {
+                filter["userId"] = userId;
+            }
+        }
+        if (isValid(category)) {
+            filter["category"] = category.trim();
+        }
+        if (isValid(subcategory)) {
+            const subCategoryArray = subcategory.trim().split(",").map((s) => s.trim());
+            filter["subcategory"] = { $all: subCategoryArray };
+        };
+        // if(userQuery!=filter) return res.status(400).send({status:false,msg:"Invalid input in query params"})
+
+        let findBook = await bookModel.find(filter).select({ title: 1, book_id: 1, excerpt: 1, userId: 1, category: 1, releasedAt: 1, reviews: 1, });
+        if (Array.isArray(findBook) && findBook.length === 0) {
+            return res.status(404).send({ status: false, message: "Books Not Found" });
+        } else {
+            res.status(200).send({ status: true, message: "Books list", data: findBook });
+        };
+    }
+    catch (err) {
+        res.status(500).send({ status: false, message: "Internal Server Error", error: err.message, });
     }
 };
 
@@ -141,53 +186,7 @@ const updateBook = async function (req, res) {
     }
 };
 
-// ---------------------------****---  Get Books ------***----------------------------------***---------------
 
-const getBooks = async function (req, res) {
-    try {
-        let userQuery = req.query;
-        let filter = { isDeleted: false,};
-
-        if(!isValidRequestBody(userQuery)) {
-            let books= await bookModel.find(filter).select({ title: 1, book_id: 1, excerpt: 1, userId: 1, category: 1, releasedAt: 1, reviews: 1, });
-            return res.status(200).send({status:true,data:books})
-        }
-
-        // if (!isValidRequestBody(userQuery)) return res.status(400).send({ status: true, message: " please provide valid data query params" });
-    
-
-        const { userId, category, subcategory } = userQuery;
-        if (!isValid(userId) && !isValid(category) && !isValid(subcategory))
-            return res.status(400).send({status:false,msg:"invalid query parameter"})
-
-
-        if (filter.userId) {
-            if (!isValidObjectId(userId)) return res.status(400).send({ status: false, message: "Invalid userId" });
-
-            if (isValid(userId)) {
-                filter["userId"] = userId;
-            }
-        }
-        if (isValid(category)) {
-            filter["category"] = category.trim();
-        }
-        if (isValid(subcategory)) {
-            const subCategoryArray = subcategory.trim().split(",").map((s) => s.trim());
-            filter["subcategory"] = { $all: subCategoryArray };
-        };
-        // if(userQuery!=filter) return res.status(400).send({status:false,msg:"Invalid input in query params"})
-
-        let findBook = await bookModel.find(filter).select({ title: 1, book_id: 1, excerpt: 1, userId: 1, category: 1, releasedAt: 1, reviews: 1, });
-        if (Array.isArray(findBook) && findBook.length === 0) {
-            return res.status(404).send({ status: false, message: "Books Not Found" });
-        } else {
-            res.status(200).send({ status: true, message: "Books list", data: findBook });
-        };
-    }
-    catch (err) {
-        res.status(500).send({ status: false, message: "Internal Server Error", error: err.message, });
-    }
-};
 
 // --------------***-----------------***---------------------***------------------
 //  DELETE /books/:bookId
