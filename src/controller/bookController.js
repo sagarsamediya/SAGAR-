@@ -32,7 +32,7 @@ const createBookDoc = async function (req, res) {
 
         //  ISBN NO. VALIDATION
         if (!isValid(ISBN) || isValidRegxISBN(ISBN)) {
-            return res.status(400).send({ status: false, message: "Enter ISBN Also Valid" });
+            return res.status(400).send({ status: false, message: "Enter valid ISBN, min 13 digit value" });
         }
 
         let duplicatetitle = await bookModel.findOne({ title: title });
@@ -64,10 +64,10 @@ const createBookDoc = async function (req, res) {
 const getBooks = async function (req, res) {
     try {
         let userQuery = req.query;
-        let filter = { isDeleted: false, };
+        let filter = { isDeleted: false};
 
         if (!isValidRequestBody(userQuery)) {
-            let books = await bookModel.find(filter).select({ title: 1, book_id: 1, excerpt: 1, userId: 1, category: 1, releasedAt: 1, reviews: 1, });
+            let books = await bookModel.find(filter).select({ title: 1, book_id: 1, excerpt: 1, userId: 1, category: 1, releasedAt: 1, reviews: 1});
             return res.status(200).send({ status: true, data: books })
         };
 
@@ -75,8 +75,9 @@ const getBooks = async function (req, res) {
         if (!isValid(userId) && !isValid(category) && !isValid(subcategory))
             return res.status(400).send({ status: false, msg: "invalid query parameter" })
 
+         
 
-        if (filter.userId) {
+        if (userId) {
             if (!isValidObjectId(userId)) return res.status(400).send({ status: false, message: "Invalid userId" });
 
             if (isValid(userId)) {
@@ -88,7 +89,7 @@ const getBooks = async function (req, res) {
         }
         if (isValid(subcategory)) {
             const subCategoryArray = subcategory.trim().split(",").map((s) => s.trim());
-            filter["subcategory"] = { $all: subCategoryArray };
+            filter["subcategory"] = { $in: subCategoryArray };
         };
         // if(userQuery!=filter) return res.status(400).send({status:false,msg:"Invalid input in query params"})
 
