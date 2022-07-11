@@ -1,11 +1,10 @@
 const express = require("express");
 const router =express.Router();
-const userController = require("../controller/userController");
-const bookController =require("../controller/bookController");
-const reviewController=require("../controller/reviewController");
-const middleware = require("../middleware/auth");
-const login = require("../controller/login");
-
+const userController = require("../controller/userController")
+const bookController =require("../controller/bookController")
+const reviewController = require("../controller/reviewController")
+const middleware = require("../middleware/auth")
+const login = require("../controller/login")
 
 
 //---------------------------------- *** user api ***-----------------------------------------//
@@ -29,8 +28,14 @@ router.get("/books",middleware.authentication,bookController.getBooks);
 
 router.post("/books/:bookId/review",reviewController.createReview);
 
-// router.put("/books/:bookId/review/:reviewId",)
+ router.put("/books/:bookId/review/:reviewId",reviewController.updateReview)
 
 // router.delete("/books/:bookId/review/:reviewId",)
+
+
+// ==========> This API is used for handling any invalid Endpoints <=========== 
+router.all("/*", async function (req, res) {
+    res.status(404).send({ status: false, msg: "Page Not Found!!!" });
+  });
 
 module.exports=router;

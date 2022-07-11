@@ -3,6 +3,10 @@ const userModel = require("../model/userModel");
 const reviewModel = require("../model/reviewModel");
 const { isValid, isValidRequestBody, isValidOjectId, isValidRegxDate, isValidRegxISBN } = require("../validation/validation");
 const { isValidObjectId } = require("mongoose");
+const mongoose = require("mongoose");
+const { request } = require("express");
+const ObjectId = require('mongoose').Types.ObjectId
+
 
 //-----------------##---------## create Books documents ##------------------##----------------------//
 
@@ -107,7 +111,7 @@ const getBookByBookId = async function (req, res) {
         const book = await bookModel.findOne({ _id: bookId, isDeleted: false })
         // WHEN  NOT FOUND
         if (!book) {
-            return res.status(404).send({ status: false, mseesge: "book not found" })
+            return res.status(404).send({ status: false, message: "book not found" })
         }
         // FETCHING   REVIEW   FROM   REVIEW   MODEL 
         const review = await reviewModel.find({ bookId: bookId, isDeleted: false }).select({ _id: 1, bookId: 1, reviewedBy: 1, reviewedAt: 1, rating: 1, review: 1 });
@@ -138,38 +142,66 @@ const updateBook = async function (req, res) {
             return res.status(400).send({ status: false, message: "Enter Data in Body" });
         };
         const { title, excerpt, releasedAt, ISBN } = requestBody; // DESTRUCTURING
-        // BODY DATA VALIDATIONS
-        if (title =="") {
-            return res.status(400).send({ status: false, message: "Eneter Title" });
-        };
-        if (excerpt =="") {
-            return res.status(400).send({ status: false, message: "Enter excerpt" });
-        };
-        //   DATE VALIDATION
-        if (releasedAt == "")  {
-            return res.status(400).send({ status: false, message: "Enter release date Also Formate Should be 'YYYY-MM-DD' " });
-        };
-
-        //  ISBN NO. VALIDATION
-        if (ISBN==="")  {
-            return res.status(400).send({ status: false, message: "Enter ISBN Also Valid" });
-        };
         const bookData = await bookModel.findOne({ _id: bookId, isDeleted: false });
         if (!bookData)
             return res.status(404).send({ status: false, message: "Book not found With Given id,or Allready Delete" });
 
-        if (req.loggedInUser != bookData.userId)   //// CHECKING USER AUTERIZATION
-            return res.status(403).send({ status: false, message: "Unauthorize To Make Changes" });
 
-        // CHECKING UNIQUE EXISTANCE IN DB
-        const uniqueIsbn = await bookModel.findOne({ ISBN: ISBN });
-        if (uniqueIsbn) {
-            return res.status(400).send({ status: false, message: "ISBN Allready Exist Use Different" });
-        }
+        // BODY DATA VALIDATIONS
+        if(requestBody.title){
+        if (!isValid(title)) {
+            return res.status(400).send({ status: false, message: "Enter Title" });
+        };
         const uniqueTitle = await bookModel.findOne({ title: title });
         if (uniqueTitle) {
             return res.status(400).send({ status: false, message: "Title Allready Exist Use different Title" });
         }
+        bookData.title=requestBody.title;
+
+    }
+
+        if(requestBody.excerpt){
+        if (!isValid(excerpt)) {
+            return res.status(400).send({ status: false, message: "Enter excerpt" });
+        };
+        bookData.excerpt=requestBody.excerpt;
+
+    }
+        //  DATE VALIDATION
+        if(requestBody.releaseAt){
+        if (!isValid(releasedAt) || !isValidRegxDate(releasedAt)) {
+            return res.status(400).send({ status: false, message: "Enter release date Also Formate Should be 'YYYY-MM-DD' " });
+        };
+        bookData.releasedAt=requestBody.releaseAt;
+
+    }
+    
+
+        //  ISBN NO. VALIDATION
+        if(requestBody.ISBN){
+        if (!isValid(ISBN) || isValidRegxISBN(ISBN)) {
+            return res.status(400).send({ status: false, message: "Enter ISBN Also Valid" });
+        };
+        
+
+        // CHECKING UNIQUE EXISTANCE IN DB
+
+        const uniqueIsbn = await bookModel.findOne({ ISBN: ISBN });
+        if (uniqueIsbn) {
+            return res.status(400).send({ status: false, message: "ISBN Already Exist Use Different" });
+        }
+
+        bookData.ISBN=requestBody.ISBN;
+
+
+    }
+
+    
+        // CHECKING USER AUTERIZATION
+        if (req.loggedInUser != bookData.userId)   
+            return res.status(403).send({ status: false, message: "Unauthorize To Make Changes" });
+
+        
         //  UPADATING DOCUMENT IN DB
         const updatedBook = await bookModel.findByIdAndUpdate({ _id: bookId }, { $set: { title: title, excerpt: excerpt, releasedAt: releasedAt, ISBN: ISBN } }, { new: true });
         res.status(200).send({ status: true, message: "Updated Successfully", data: updatedBook })

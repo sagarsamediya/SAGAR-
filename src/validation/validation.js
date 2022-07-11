@@ -32,7 +32,7 @@ const isValidRequestBody = function(data) {
     return true 
 }
 
-let arr = [1,2,3,'rohan']
+
 const isValidRegxDate = function(date){
     if(/^\d{4}\-(0?[1-9]|1[012])\-(0?[1-9]|[12][0-9]|3[01])$/gm.test(date)) return true;
     return false;
