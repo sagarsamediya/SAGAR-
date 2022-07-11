@@ -1,11 +1,8 @@
 const bookModel = require("../model/bookModel");
 const userModel = require("../model/userModel");
-const reviewModel = require('../model/reviewModel');
+const reviewModel = require("../model/reviewModel");
 const { isValid, isValidRequestBody, isValidOjectId, isValidRegxDate, isValidRegxISBN } = require("../validation/validation");
 const { isValidObjectId } = require("mongoose");
-const mongoose = require("mongoose");
-const ObjectId = require('mongoose').Types.ObjectId
-
 
 //-----------------##---------## create Books documents ##------------------##----------------------//
 
@@ -19,8 +16,8 @@ const createBookDoc = async function (req, res) {
 
 
         if (!isValid(title)) return res.status(400).send({ status: false, msg: "title is invalid or empty,required here valid information" });
-        if (userId == '' || !userId) return res.status(400).send({ status: false, message: "userId tag is required" });
-
+       if (userId == '' || !userId) return res.status(400).send({ status: false, message: "userId tag is required" });
+ 
 
         if (!isValidOjectId(userId)) return res.status(400).send({ status: false, message: "userId is invalid or empty,required here valid information" });
 
@@ -142,19 +139,19 @@ const updateBook = async function (req, res) {
         };
         const { title, excerpt, releasedAt, ISBN } = requestBody; // DESTRUCTURING
         // BODY DATA VALIDATIONS
-        if (!isValid(title)) {
+        if (title =="") {
             return res.status(400).send({ status: false, message: "Eneter Title" });
         };
-        if (!isValid(excerpt)) {
+        if (excerpt =="") {
             return res.status(400).send({ status: false, message: "Enter excerpt" });
         };
         //   DATE VALIDATION
-        if (!isValid(releasedAt) || !isValidRegxDate(releasedAt)) {
+        if (releasedAt == "")  {
             return res.status(400).send({ status: false, message: "Enter release date Also Formate Should be 'YYYY-MM-DD' " });
         };
 
         //  ISBN NO. VALIDATION
-        if (!isValid(ISBN) || isValidRegxISBN(ISBN)) {
+        if (ISBN==="")  {
             return res.status(400).send({ status: false, message: "Enter ISBN Also Valid" });
         };
         const bookData = await bookModel.findOne({ _id: bookId, isDeleted: false });
