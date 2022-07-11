@@ -18,7 +18,7 @@ const userLogin = async function(req,res){
         "project_3_Group-64"               
     )
         res.setHeader("x-api-key",token)
-        return res.status(201).send({status:true,msg:"sucessfully login",data:token})
+        return res.status(201).send({status:true,msg:"  sucessfully login",data:token})
     }
 
     module.exports.userLogin = userLogin;
