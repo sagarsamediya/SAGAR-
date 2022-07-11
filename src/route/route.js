@@ -32,4 +32,10 @@ router.get("/books",middleware.authentication,bookController.getBooks)
 
 // router.delete("/books/:bookId/review/:reviewId",)
 
+
+// ==========> This API is used for handling any invalid Endpoints <=========== 
+router.all("/*", async function (req, res) {
+    res.status(404).send({ status: false, msg: "Page Not Found!!!" });
+  });
+
 module.exports=router;
