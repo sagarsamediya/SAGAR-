@@ -16,34 +16,39 @@ const createReview = async function (req, res) {
         let bookId = req.params.bookId;
         if (bookId == '' || !bookId) return res.status(400).send({ status: false, message: "bookId tag is required" });
         if (!isValidObjectId(bookId)) return res.status(400).send({ status: false, message: "bookId is invalid or empty,required here valid information" });
-
         data.bookId=bookId
 
-        const {reviewBy,reviewedAt,rating,review}=data
-        if(reviewBy){
-        if(!isValid(reviewBy))return res.status(400).send({status:false,msg:"Give name of reviewer"});
-        if(!isValidName(reviewBy))return res.status(400).send({status:400,msg:"Provide valid name"});
+        const {reviewedBy,reviewedAt,rating,review}=data
+
+
+        if(!isValidName(reviewedBy))return res.status(400).send({status:false,msg:"Provide valid name"});
+        if(reviewedBy){
+        if(!isValid(reviewedBy))return res.status(400).send({status:false,msg:"Give name of reviewer"});
         };
 
-        if(!isValid(reviewedAt))return res.status(400).send({status:false,msg:"this is format 'yyyy-mm-dd' "});
+        // if(!isValid(reviewedAt))return res.status(400).send({status:false,msg:"this is format of date 'yyyy-mm-dd' "});
+        data["reviewedAt"]=Date.now()
 
+        
 
        if(!(rating>=1 && rating<=5))return res.status(400).send({status:false,msg:"please provide rating 1-5"});
         if(!isValid(rating))return res.status(400).send({status:false,msg:"please provide rating"});
-        if (review){
-        if(!isValid(review))return res.status(400).send({status:false,msg:"please give your review about books"});
-        };
-
-        let existBookId = await bookModel.findOne({_id:bookId,isDeleted:false});
-        if (!existBookId) return res.status(400).send({ status: false, msg: `${bookId}.This bookId is invalid` });
-
+        
+        if(review && !isValid(review))return res.status(400).send({status:false,msg:"please give your review about books"});
+        
         let savedData = await reviewModel.create(data);
-        return res.send({ status: true, data: savedData });
+        const existBookId = await bookModel.findOneAndUpdate({_id:bookId,isDeleted:false},{$inc:{reviews:+1}},{new:true}).lean();
+        if (!existBookId)return res.status(404).send({ status: false, msg: `${bookId}.This bookId not found in Db` });
+    
+        existBookId["createdreview"]=savedData
+
+        return res.send({ status: true, data: existBookId });
     }
     catch (err) {
         res.status(500).send({ status: false, msg: "Internal server error" });
     }
 };
+
 
 const updateReview = async function (req, res) {
     try {
