@@ -145,7 +145,9 @@ const updateBook = async function (req, res) {
         //  IF BODY IS EMPTY
         if (Object.keys(requestBody).length == 0) {
             return res.status(400).send({ status: false, message: "Enter Data in Body" });
-        };
+        }
+       
+
         const { title, excerpt, releasedAt, ISBN } = requestBody; // DESTRUCTURING
         // BODY DATA VALIDATIONS
         if (!isValid(title)) {
@@ -158,6 +160,8 @@ const updateBook = async function (req, res) {
         if (!isValid(releasedAt) || !isValidRegxDate(releasedAt)) {
             return res.status(400).send({ status: false, message: "Enter release date Also Formate Should be 'YYYY-MM-DD' " });
         };
+
+
 
         //  ISBN NO. VALIDATION
         if (!isValid(ISBN) || isValidRegxISBN(ISBN)) {
@@ -203,13 +207,15 @@ const deleteBookId = async (req, res) => {
         // bookId is a valid objectId
         if (!isValidObjectId(bookId)) return res.status(400).send({ status: false, msg: "bookId is not valid" })
 
-        const book = await bookModel.findOne({ _id: bookId, isDeleted: false })
+        const book = await bookModel.findOne({ _id:reviewId, bookId:bookId, isDeleted: false })
         if (!book) return res.status(404).send({ status: false, msg: "book not exist or allerady deleted" })
 
+        let verifyToken = req.loggedInUser
+        if (verifyToken != userId) return res.status(403).send({ status: false, msg: "You are not authorize to createBook from another userId" });
 
         // set the isDeleted true of that book with deleted date
         await bookModel.findOneAndUpdate({ _id: bookId }, { $set: { isDeleted: true, deletedAt: new Date() } })
-        // await reviewModel.findByIdAndUpdate({bookId:bookId},{$set:{isDeleted:true}})
+         await reviewModel.findByIdAndUpdate({bookId:bookId},{$set:{isDeleted:true}})
         return res.status(200).send({ status: true, message: "Success" })
     }
     catch (err) {
