@@ -2,7 +2,8 @@ const bookModel = require("../model/bookModel");
 const reviewModel = require("../model/reviewModel");
 const { isValidObjectId } = require("mongoose");
 const { findById, validate } = require("../model/userModel");
-const { isValid, isValidRequestBody,isValidName } = require("../validation/validation");
+const { isValid, isValidRequestBody,isValidName,regexSpaceChar } = require("../validation/validation");
+const mongoose = require('mongoose');
 
 
 
@@ -47,19 +48,20 @@ const createReview = async function (req, res) {
 
 // ----------------------------------****----------------------------------***-------------------------------------
 
+
+
 const updateReview = async function (req, res) {
     try {
-
         const requestBody = req.body
         const bookId = req.params.bookId
         const reviewId = req.params.reviewId
 
         //     Validation and DB fetch for Existance
-        if (!isValid(bookId) || !isValidOjectId(bookId)) {
-            return res.status(400).send({ status: false, message: "Please! enter a valid bookid" })
+        if (!isValid(bookId) || !isValidObjectId(bookId)) {
+            return res.status(400).send({ status: false, message: "Please! enter a valid bookId" })
         }
 
-        if (!isValid(reviewId) || !isValidOjectId(reviewId)) {
+        if (!isValid(reviewId) || !isValidObjectId(reviewId)) {
             return res.status(400).send({ status: false, message: "Please! enter a valid reviewId" })
         }
         const existBook = await bookModel.findOne({ _id: bookId, isDeleted: false })
@@ -68,12 +70,12 @@ const updateReview = async function (req, res) {
         }
         const existReview = await reviewModel.findOne({ _id: reviewId, isDeleted: false })
         if (!existReview) {
-            return res.status(404).send({ status: false, message: "Review Id does not exist in DataBase" })
+            return res.status(404).send({ status: false, message: "Review Id does not exist in Data-Base" })
         }
 
         // check params-bookid matches with reiews bookid
         if (!(existReview.bookId == bookId)) {
-            return res.status(400).send({ status: false, message: `The Review does not belong to book by BookId: ${bookId}` })
+            return res.status(400).send({ status: false, message: `The Review does not belong to book by Book id: ${bookId}` })
         }
         if (!(Object.keys(requestBody).length > 0)) {
             return res.status(400).send({
@@ -86,40 +88,31 @@ const updateReview = async function (req, res) {
         const { reviewedBy, rating, review } = requestBody  
 
         const filter = {}
-        if (reviewedBy) {
+        if ("reviewedBy" in requestBody) {
             if (!isValid(reviewedBy)) {
-                return res.status(400).send({ status: false, message: "Please! enter a valid data to reviewedby feild" })
+                return res.status(400).send({ status: false, message: "Please! enter a valid data to 'reviewedby' feild" })
             }
             filter['reviewedBy'] = reviewedBy.trim()
-            /*
-            filter={
-                reviewedBy:reviewedBy.trim();
-            } */
         }
 
-        if (rating) {
+        if ("rating" in requestBody) {
             if (!(rating >= 1 && rating <= 5)) {
                 return res.status(400).send({ status: false, message: "Please! enter a value to rating feild between 1 and 5" })
             }
             filter['rating'] = rating
         }
 
-        if (review) {
+        if ("review" in requestBody) {
             if (!isValid(review)) {
                 return res.status(400).send({ status: false, message: "Please! enter a valid data to 'review' feild" })
             }
             filter['review'] = review.trim()
         }
-
         const updatedReview = await reviewModel.findOneAndUpdate({ _id: reviewId }, { $set: filter }, { new: true })
         const reviewData = await reviewModel.findOne({ _id:reviewId }).select({ bookId: 1, reviewedBy: 1, reviewedAt: 1, rating: 1, review: 1 })
-
         //      Destructuring
-
         const { _id, title, excerpt, userId, category, subcategory, isDeleted, reviews, deletedAt, releaseAt, createdAt, updatedAt } = existBook
-
-        //     Assigning to variable  data object
-
+        //     Assigning to varable  data object
         const data = { _id, title, excerpt, userId, category, subcategory, isDeleted, reviews, deletedAt, releaseAt, createdAt, updatedAt, reviewData }
 
         return res.status(200).send({ status: true, message: "Success", data: data })
@@ -129,6 +122,10 @@ const updateReview = async function (req, res) {
         return res.status(500).send({ status: false, message: error.message })
     }
 };
+
+
+
+
 
 // ------------------------------------------***------------------------------------***-----------------
 
