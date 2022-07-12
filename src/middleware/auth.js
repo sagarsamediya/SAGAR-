@@ -23,6 +23,7 @@ const authentication = async function (req, res, next) {
       }
     }
     )
+    
 
   } catch (err) {
     res.status(500).send({ msg: "Internal Server Error", error: err.message });

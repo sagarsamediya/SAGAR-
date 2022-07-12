@@ -17,7 +17,7 @@ const userLogin = async function(req,res){
         {
             userId: user._id.toString(),
             iat: Math.floor(Date.now()/1000),
-            ext: Math.floor(Date.now()/1000)+10*60*60 
+            ext: Math.floor(Date.now()/1000)+1*60 
         },
         "project_3_Group-64"               
     )

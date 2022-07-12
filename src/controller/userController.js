@@ -58,7 +58,7 @@ const createUser = async function (req, res) {
             return res.status(400).send({ status: false, msg: 'email already exists' })
         }
         //----------addressValidation
-        if (!isValid(address.trim())) {
+        if (!isValid(address)) {
             return res.status(400).send({ status: false, message: 'address is required' })
         }
         if (address) {
