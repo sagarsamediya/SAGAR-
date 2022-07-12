@@ -45,6 +45,8 @@ const createReview = async function (req, res) {
     }
 };
 
+// ----------------------------------****----------------------------------***-------------------------------------
+
 const updateReview = async function (req, res) {
     try {
 
@@ -128,7 +130,48 @@ const updateReview = async function (req, res) {
     }
 };
 
+// ------------------------------------------***------------------------------------***-----------------
+
+const deleteReviewById = async function (req, res) {
+    try {
+        let bookId = req.params.bookId
+        let reviewId = req.params.reviewId
+
+        // check bookId is a valid ObjectId
+        if (!isValidObjectId(bookId)) {
+            return res.status(400).send({ status: false, msg: 'bookId is not a valid object Id' })
+        }
+
+        // check reviewId is a valid ObjectId
+        if (!isValidObjectId(reviewId)) {
+            return res.status(400).send({ status: false, msg: 'reviewId is not a valid object Id' })
+        }
+
+        // find the book with book and check that is not deleted
+        const book = await bookModel.findOne({ _id: bookId, isDeleted: false })
+        if (!book) {
+            return res.status(400).send({ status: false, msg: 'book does not found' })
+        }
+
+        // find the book with book and check that is not deleted
+        const review = await reviewModel.findOne({ _id: reviewId, bookId:bookId, isDeleted: false })
+        if (!review) {
+            return res.status(400).send({ status: false, msg: 'review does not exist for given bookId' })
+        }
+
+        // set the isDeleted property of review to true 
+        const deletedReview = await reviewModel.findOneAndUpdate({ _id: reviewId, bookId: bookId }, { isDeleted: true }, { new: true })
+        // decrease the review count in the book
+         const decreaseCount = await bookModel.findOneAndUpdate({ _id: bookId, reviews: { $gt: 0 } }, { $inc: { reviews: -1 } })
+        return res.status(200).send({ status: true, msg: 'review deleted successfully' })
+
+    } catch (err) {
+        return res.status(500).send({ error: err.message })
+    }
+
+}
 
 
-module.exports={updateReview,createReview}
+
+module.exports={updateReview,createReview,deleteReviewById }
 
