@@ -24,7 +24,7 @@ const isValidMobile=(mobile)=>{
     return true
 }
 const isValidPassword=(password)=>{
-    if(/^[a-zA-Z]\w{8,15}$/.test(password)) //The password's first character must be a letter
+    if(/^(?=.*?[A-Z])(?=.*?[a-z])(?=.*?[0-9])(?=.*?[#?!@$%^&*-]).{8,15}$/.test(password)) //The password's first character must be a letter
     return true
 }
 const isValidRequestBody = function(data) {
@@ -48,4 +48,9 @@ const isValidOjectId = function(id){
     return false;
 }
 
-module.exports={isValid,isValidName,isValidEmail,isValidMobile,isValidPassword,isValidRequestBody,isValidRegxDate,isValidRegxISBN,isValidOjectId }
+let regexSpaceChar = function (attribute) {
+    return (/^[A-Za-z\s]{1,}[\,]{0,1}[A-Za-z\s]{0,}$/.test(attribute))
+}
+
+
+module.exports={isValid,isValidName,isValidEmail,isValidMobile,isValidPassword,isValidRequestBody,isValidRegxDate,isValidRegxISBN,isValidOjectId,regexSpaceChar }

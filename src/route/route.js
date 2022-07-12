@@ -30,7 +30,7 @@ router.post("/books/:bookId/review",reviewController.createReview);
 
  router.put("/books/:bookId/review/:reviewId",reviewController.updateReview)
 
-// router.delete("/books/:bookId/review/:reviewId",)
+ router.delete("/books/:bookId/review/:reviewId",reviewController.deleteReviewById)
 
 
 // ==========> This API is used for handling any invalid Endpoints <=========== 
