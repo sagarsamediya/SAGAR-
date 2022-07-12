@@ -24,7 +24,7 @@ const isValidMobile=(mobile)=>{
     return true
 }
 const isValidPassword=(password)=>{
-    if(/^(?=.*?[A-Z])(?=.*?[a-z])(?=.*?[0-9])(?=.*?[#?!@$%^&*-]).{8,15}$/.test(password)) //The password's first character must be a letter
+    if(/^(?=.*\d)(?=.*[a-zA-Z]).{8,15}$/.test(password)) //The password's first character must be a letter
     return true
 }
 const isValidRequestBody = function(data) {
