@@ -24,17 +24,17 @@ const createUser = async function (req, res) {
         // if (!isValid(address)) return res.status(400).send({ status: false, msg: "address is required" })
 
         //---------title validation
-        if (!["Mr", "Miss", "Mrs"].includes(title)) {
+        if (!["Mr", "Miss", "Mrs"].includes(title.trim())) {
             return res.status(400).send({ status: false, msg: "Title must includes['Mr','Miss','Mrs']" })
         }
 
         //------match name with regex
-        if (!isValidName(name))
+        if (!isValidName(name.trim()))
             return res.status(400).send({ status: false, msg: "Please use valid type of name" })
         
 
         //-------match phone with regex
-        if (!isValidMobile(phone)) {
+        if (!isValidMobile(phone.trim())) {
             return res.status(400).send({ status: false, msg: "please provide a valid phone Number" })
         }
         let duplicatePhone = await userModel.findOne({ phone: phone })
@@ -43,13 +43,13 @@ const createUser = async function (req, res) {
         }
 
         //-------match email with regex
-        if (!isValidEmail(email)) {
+        if (!isValidEmail(email.trim())) {
             return res.status(400).send({ status: false, msg: "Please provide a email in correct format" })
         }
 
          //--------match password with regex
-         if (!isValidPassword(password)) {
-            return res.status(400).send({ status: false, msg: "Please  Passworduse first letter in uppercase, lowercase and number with min. 8 lengthand maxi 15 length" })
+         if (!isValidPassword(password.trim())) {
+            return res.status(400).send({ status: false, msg: "Please provide Password first letter in uppercase, lowercase and number with min. 8  max 15 length" })
         }
 
         //check if email is already in use
@@ -58,21 +58,21 @@ const createUser = async function (req, res) {
             return res.status(400).send({ status: false, msg: 'email already exists' })
         }
         //----------addressValidation
-        if (!isValid(address)) {
+        if (!isValid(address.trim())) {
             return res.status(400).send({ status: false, message: 'address is required' })
         }
         if (address) {
-            if (!isValid(address.street)) {
+            if (!isValid(address.street.trim())) {
                 return res.status(400).send({ status: false, message: 'street is required' })
                 
             }
             //address match with regex 
-            if ((!isValid(address.city))|| !(/^[a-zA-Z]*$/).test(address.city)) {
+            if ((!isValid(address.city.trim()))|| !(/^[a-zA-Z]*$/).test(address.city)) {
                 return res.status(400).send({ status: false, message: 'city is required' })
                
             }
             //pincode match with regex
-            if ((!isValid(address.pincode)) || !(/^\d{6}$/).test(address.pincode) ) {
+            if ((!isValid(address.pincode.trim())) || !(/^\d{6}$/).test(address.pincode) ) {
                 return res.status(400).send({ status: false, message: 'Enter the pincode and only in 6 digits'})
             }
         }
