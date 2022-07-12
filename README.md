@@ -15,7 +15,7 @@
 { 
   title: {string, mandatory, enum[Mr, Mrs, Miss]},
   name: {string, mandatory},
-  phone: {string, mandatory, unique},
+  phone: {String, mandatory, unique},
   email: {string, mandatory, valid email, unique}, 
   password: {string, mandatory, minLen 8, maxLen 15},
   address: {
@@ -84,7 +84,7 @@
 - If no documents are found then return an HTTP status 404 with a response like [this](#error-response-structure) 
 - Filter books list by applying filters. Query param can have any combination of below filters.
   - By userId
-  - By category   
+  - By category
   - By subcategory
   example of a query url: books?filtername=filtervalue&f2=fv2
 - Return all books sorted by book name in Alphabatical order
@@ -172,7 +172,7 @@ Refer below sample
   _id: ObjectId("88abc190ef0288abc190ef02"),
   title: "Mr",
   name: "John Doe",
-  phone: 9897969594,
+  phone: "9897969594",
   email: "johndoe@mailinator.com", 
   password: "abcd1234567",
   address: {
