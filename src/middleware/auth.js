@@ -14,7 +14,10 @@ const authentication = async function (req, res, next) {
         if (Date.now() > decodedToken.exp * 1000) {
           return res.status(401).send({ status: false, msg: "Session Expired" });
         }
+        
         req.loggedInUser= decodedToken.userId;
+        //return res.status(200).send({ status: true, tokenContains:decodedToken });
+        
         next();
 
       }

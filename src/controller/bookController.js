@@ -16,11 +16,11 @@ const createBookDoc = async function (req, res) {
 
         if (!isValidRequestBody(data)) return res.status(400).send({ status: false, msg: "data is empty" });
         // destructure
-        let { title, excerpt, ISBN, category, subcategory, userId } = data
+        let { title, excerpt, ISBN, category, subcategory, userId,releasedAt } = data
 
 
         if (!isValid(title)) return res.status(400).send({ status: false, msg: "title is invalid or empty,required here valid information" });
-       if (userId == '' || !userId) return res.status(400).send({ status: false, message: "userId tag is required" });
+       if (userId == '' || !userId) return res.status(400).send({ status: false, message: "userId  is required" });
  
 
         if (!isValidOjectId(userId)) return res.status(400).send({ status: false, message: "userId is invalid or empty,required here valid information" });
@@ -29,7 +29,7 @@ const createBookDoc = async function (req, res) {
         if (!isValid(ISBN)) return res.status(400).send({ status: false, msg: "ISBN is invalid or empty,required here valid information" });
         if (!isValid(category)) return res.status(400).send({ status: false, msg: "category is invalid or empty,required here valid information" });
         if (!isValid(subcategory)) return res.status(400).send({ status: false, msg: "subcategory is invalid or empty,required here valid information" });
-        // if (!isValid(releasedAt)) return res.status(400).send({ status: false, msg: "releasedAt is invalid" });
+         if (!isValid(releasedAt)) return res.status(400).send({ status: false, msg: "releasedAt is required" });
 
         //  ISBN NO. VALIDATION
         if (!isValid(ISBN) || isValidRegxISBN(ISBN)) {
