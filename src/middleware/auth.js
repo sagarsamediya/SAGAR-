@@ -23,6 +23,16 @@ const authentication = async function (req, res, next) {
       }
     }
     )
+
+  //   let token = jwt.sign(
+  //     { userId: user._id.toString(), iat: Math.floor(new Date().getTime() / 1000) },
+
+  //     "project_3_Group-64", { expiresIn:"6000s" }
+  // );
+  // let decode= jwt.verify(token,"project_3_Group-64")
+  // let date=decode.iat
+  // let time= new Date(date*1000).toString()
+  // res.status(200).send({ status: true, message: "Successfully loggedin",iat:time, token: token });
     
 
   } catch (err) {

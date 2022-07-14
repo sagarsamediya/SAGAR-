@@ -48,9 +48,8 @@ const isValidOjectId = function(id){
     return false;
 }
 
-let regexSpaceChar = function (attribute) {
-    return (/^[A-Za-z\s]{1,}[\,]{0,1}[A-Za-z\s]{0,}$/.test(attribute))
+const isValidPincode = (pin) => {
+    if (/^[1-9][0-9]{5}$/.test(pin))
+        return true
 }
-
-
-module.exports={isValid,isValidName,isValidEmail,isValidMobile,isValidPassword,isValidRequestBody,isValidRegxDate,isValidRegxISBN,isValidOjectId,regexSpaceChar }
+module.exports={isValid,isValidName,isValidEmail,isValidMobile,isValidPassword,isValidRequestBody,isValidRegxDate,isValidRegxISBN,isValidOjectId,isValidPincode }

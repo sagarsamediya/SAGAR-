@@ -2,7 +2,7 @@ const { validate } = require("../model/userModel");
 const userModel = require("../model/userModel");
 
 
-const {isValid,isValidName,isValidEmail,isValidMobile,isValidPassword,isValidRequestBody} =require("../validation/validation")
+const {isValid,isValidName,isValidEmail,isValidMobile,isValidPassword,isValidRequestBody,isValidPincode} =require("../validation/validation")
 
 
 const createUser = async function (req, res) {
@@ -58,24 +58,19 @@ const createUser = async function (req, res) {
             return res.status(400).send({ status: false, msg: 'email already exists' })
         }
         //----------addressValidation
-        if (!isValid(address)) {
-            return res.status(400).send({ status: false, message: 'address is required' })
-        }
-        if (address) {
-            if (!isValid(address.street.trim())) {
-                return res.status(400).send({ status: false, message: 'street is required' })
-                
+        if("address" in userBody){
+            const { pincode,street,city } = address
+            if(typeof address === "string") return res.status(400).send({status:false,message:"Address Should be of object type"})
+            if(isValidRequestBody(address)) return res.status(400).send({status:false,message:"Address Should Not Be Empty"})
+            if("street" in address){
+                if(!isValid(street)) return res.status(400).send({status:false,message:"Dont Left Street Attribute Empty"})}
+            if("city" in address){
+                if(!isValid(city)) return res.status(400).send({status:false,message:"Dont Left city Attribute Empty"})
+                if(!isValidName(city)) return res.status(400).send({status:false,message:"Pls Enter Valid City Name"})}
+            if("pincode"in address){
+                if(!isValid(pincode)) return res.status(400).send({status:false,message:"Dont Left pincode Attribute Empty"})
+                if (!isValidPincode(pincode)) return res.status(400).send({ status: false, message: "Pls Enter Valid PAN Pincode" })}
             }
-            //address match with regex 
-            if ((!isValid(address.city.trim()))|| !(/^[a-zA-Z]*$/).test(address.city)) {
-                return res.status(400).send({ status: false, message: 'city is required' })
-               
-            }
-            //pincode match with regex
-            if ((!isValid(address.pincode.trim())) || !(/^\d{6}$/).test(address.pincode) ) {
-                return res.status(400).send({ status: false, message: 'Enter the pincode and only in 6 digits'})
-            }
-        }
 
         let newUser = await userModel.create(userBody);
         return res.status(201).send({ status: true, msg: "user created successfully", data: newUser })
