@@ -8,56 +8,26 @@ const { isValid } = require("shortid");
 
 const createUrl = async function (req, res) {
   try {
-    console.log("Create URL.");
+    // console.log("Create URL.");
     const body = req.body;
-    if(Object.keys.value(length===0)) return res.status(400).send({status:false, msg: "body can not be empty"})
-   
-    const{longUrl} = body;
-    if(!isValid(longUrl))  return res.status(400).send({status:false, msg: "provide valid longUrl"})
-    // let { longUrl } = req.body ; 
-    // let shortUrl ;
-    // let urlCode ;
-    let  checkLongUrl = await urlModel.findOne({longUrl: longUrl})
-    if(checkLongUrl) return res.status(400).send({status: false , msg: "Already exit url"})
-
-    const body = req.body;
-
-    if (Object.keys(body).length === 0) {
-      return res
-        .status(400)
-        .send({ status: false, message: "Invalid Request Body: Body Empty." });
-    }
+       
+       
+    if (Object.keys(body).length === 0) return res.status(400).send({ status: false, message: "Invalid Request Body: Body Empty." });
+    
 
     let { longUrl } = body;
 
-    if (
-      typeof longUrl === "undefined" ||
-      longUrl === null ||
-      (typeof longUrl === "string" && longUrl.length === 0)
-    ) {
-      return res
-        .status(400)
-        .send({ status: false, message: "Please enter a valid <longUrl>." });
-    }
-
-    if (
-      !/^(https:\/\/www\.|http:\/\/www\.|www\.)[a-zA-Z0-9\-_.$]+\.[a-zA-Z]{2,5}(:[0-9]{1,5})?(\/[^\s]*)?/gm.test(
-        longUrl
-      )
-    ) {
-      return res
-        .status(400)
-        .send({ status: false, message: "<longURL> NOT a Valid URL Format." });
-    }
-
+    
+    if (typeof longUrl === "undefined" ||longUrl === null ) 
+      (typeof longUrl === "string" && longUrl.length === 0) 
+      return res.status(400).send({ status: false, message: "Please enter a valid <longUrl>." });
+    
+    // if(!/^(https:\/\/www\.|http:\/\/www\.|www\.)[a-zA-Z0-9\-_.$]+\.[a-zA-Z]{2,5}(:[0-9]{1,5})?(\/[^\s]*)?/gm.test( longUrl)) ;
+    //   return res.status(400).send({ status: false, message: "<longURL> NOT a Valid URL Format." });
+    
     const longUrlUnique = await urlModel.findOne({ longUrl });
-    if (longUrlUnique) {
-      return res.status(400).send({
-        status: false,
-        message: `<longURL>: <${longUrl}> Already Exists in Database.`,
-      });
-    }
-
+    if (longUrlUnique) return res.status(400).send({ status: false,message: `<longURL>: <${longUrl}> Already Exists in Database.` });
+    
     let urlCode = shortid.generate().toLowerCase();
     let shortUrl = "localhost:3000/" + urlCode;
 
@@ -70,13 +40,9 @@ const createUrl = async function (req, res) {
       shortUrl: createData.shortUrl,
       urlCode: createData.urlCode,
     };
-
-    return res.status(201).send({
-      status: true,
-      message: "Successfully Generated Short URL.",
-      data: result,
-    });
-  } catch (error) {
+    return res.status(201).send({status: true,message: "Successfully Generated Short URL.",data: result});
+  } catch (err) {
+    console.log(err)
     return res.status(500).send({ status: false, message: error.message });
   }
 };
@@ -87,12 +53,12 @@ const createUrl = async function (req, res) {
 
 const getUrl = async function (req, res) {
   try {
-    console.log("GET URL.");
+    // console.log("GET URL.");
 
     const urlCode = req.params.urlCode;
 
     const findUrl = await urlModel.findOne({ urlCode });
-
+     console.log(findUrl);
     if (!findUrl) {
       return res
         .status(404)
