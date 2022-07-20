@@ -8,7 +8,7 @@ const { isValid } = require("shortid");
 
 const createUrl = async function (req, res) {
   try {
-    console.log("Create URL.");
+    // console.log("Create URL.");
     const body = req.body;
        
        
