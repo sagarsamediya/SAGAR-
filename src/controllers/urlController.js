@@ -1,5 +1,5 @@
 const shortid = require("shortid");
-const validator = require("validator");
+  // const validator = require("validator");
 const urlModel = require("../models/urlModel");
 
 //Connect to redis
@@ -8,7 +8,7 @@ const { promisify } = require("util");
 
 const redisClient = redis.createClient(
   // 13190,
-  12992,
+  12992, 
   // "redis-13190.c301.ap-south-1-1.ec2.cloud.redislabs.com",
   "redis-12992.c301.ap-south-1-1.ec2.cloud.redislabs.com",
   { no_ready_check: true }
