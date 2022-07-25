@@ -45,7 +45,7 @@ const userSchema = new mongoose.Schema({
             pinCode: {
                 type: String, 
                 required: true
-            },
+            }
         },
         billing: {
             street: {

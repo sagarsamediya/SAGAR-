@@ -1,6 +1,7 @@
 const userModel = require("../models/userModel");
 const { uploadFile } = require("../aws/awsUpload");
 const validation = require("../validator/validation");
+const bcrypt = require("bcrypt");
 
 let { isEmpty, isValidName, isValidPhone, isValidPassword, isValidPinCode } =
   validation;
@@ -17,7 +18,7 @@ const createUser = async function (req, res) {
     }
 
     let { fName, lName, email, phone, password, address } = data;
-    // let { street, city, pinCode } = address.shipping && address.billing;
+
     if (!isEmpty(fName)) {
       res
         .status(400)
@@ -48,19 +49,6 @@ const createUser = async function (req, res) {
         .status(400)
         .send({ status: "false", message: "Address must be present" });
     }
-
-    // if (!isEmpty(street) && !isEmpty(city) && !isEmpty(pinCode)) {
-    //   res.status(400).send({
-    //     status: "false",
-    //     message: "street, city & pinCode must be present",
-    //   });
-    // }
-    if (!isValidName(fName)) {
-      res.status(400).send({
-        status: "false",
-        message: "fName must be in alphabetical order",
-      });
-    }
     if (!isValidName(lName)) {
       res.status(400).send({
         status: "false",
@@ -77,16 +65,88 @@ const createUser = async function (req, res) {
         .status(400)
         .send({ status: "false", message: "Provide a valid password" });
     }
-    // if (!isValidName(city)) {
-    //   res
-    //     .status(400)
-    //     .send({ status: "false", message: "Provide a valid city name" });
-    // }
-    // if (!isValidPinCode(pinCode)) {
-    //   res
-    //     .status(400)
-    //     .send({ status: "false", message: "Provid a valid pinCode" });
-    // }
+    if (!isValidName(fName)) {
+      res.status(400).send({
+        status: "false",
+        message: "fName must be in alphabetical order",
+      });
+    }
+
+    // ------- Address Validation  --------
+    if (address) {
+      let checkAddress = JSON.parse(address);
+      if (checkAddress.shipping) {
+        // let { street, city, pinCode } = checkAddress.shipping;
+        if (!isEmpty(checkAddress.shipping.street)) {
+          res
+            .status(400)
+            .send({ status: "false", message: "street must be present" });
+        }
+        if (!isEmpty(checkAddress.shipping.city)) {
+          res
+            .status(400)
+            .send({ status: "false", message: "city must be present" });
+        }
+        if (!isEmpty(checkAddress.shipping.pinCode)) {
+          res
+            .status(400)
+            .send({ status: "false", message: "pinCode must be present" });
+        }
+        if(!isValidName(checkAddress.shipping.street)) {
+            res
+            .status(400)
+            .send({ status: "false", message: "street should be in alphabetical order" });
+        }
+        if(!isValidName(checkAddress.shipping.city)) {
+            res
+            .status(400)
+            .send({ status: "false", message: "city should be in alphabetical order" });
+        }
+        if(!isValidPinCode(checkAddress.shipping.pinCode)) {
+            res
+            .status(400)
+            .send({ status: "false", message: "pinCode should be digits only" });
+        }
+      }
+      if (checkAddress.billing) {
+        // let { street, city, pinCode } = checkAddress.billing;
+        if (!isEmpty(checkAddress.billing.street)) {
+          res
+            .status(400)
+            .send({ status: "false", message: "street must be present" });
+        }
+        if (!isEmpty(checkAddress.billing.city)) {
+          res
+            .status(400)
+            .send({ status: "false", message: "city must be present" });
+        }
+        if (!isEmpty(checkAddress.billing.pinCode)) {
+          res
+            .status(400)
+            .send({ status: "false", message: "pinCode must be present" });
+        }
+        if(!isValidName(checkAddress.billing.street)) {
+            res
+            .status(400)
+            .send({ status: "false", message: "street should be in alphabetical order" });
+        }
+        if(!isValidName(checkAddress.billing.city)) {
+            res
+            .status(400)
+            .send({ status: "false", message: "city should be in alphabetical order" });
+        }
+        if(!isValidPinCode(checkAddress.billing.pinCode)) {
+            res
+            .status(400)
+            .send({ status: "false", message: "pinCode should be digits only" });
+        }
+      }
+    }
+
+    const saltRounds = 10; 
+    const hash = bcrypt.hash(password, saltRounds);
+    data.password = hash;
+    
     let checkEmail = await userModel.findOne({ email: email });
     if (checkEmail) {
       res
