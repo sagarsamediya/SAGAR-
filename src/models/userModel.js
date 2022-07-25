@@ -47,7 +47,6 @@ const userSchema = new mongoose.Schema({
                 required: true
             },
         },
-   
         billing: {
             street: {
                 type: String, 
