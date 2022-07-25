@@ -43,7 +43,7 @@ const userSchema = new mongoose.Schema({
                 required:true,
             },
             pinCode: {
-                type: String, 
+                type: Number, 
                 required: true
             }
         },
@@ -57,7 +57,7 @@ const userSchema = new mongoose.Schema({
                 required:true,
             },
             pinCode: {
-                type: String, 
+                type: Number, 
                 required: true
             }
         }

@@ -74,103 +74,102 @@ const createUser = async function (req, res) {
 
     // ------- Address Validation  --------
     if (address) {
-      let checkAddress = JSON.parse(address);
-      if (checkAddress.shipping) {
-        // let { street, city, pinCode } = checkAddress.shipping;
-        if (!isEmpty(checkAddress.shipping.street)) {
+      data.address = JSON.parse(address);
+      if (address.shipping) {
+        // let { street, city, pinCode } = address.shipping;
+        if (!isEmpty(address.shipping.street)) {
           res
             .status(400)
             .send({ status: "false", message: "street must be present" });
         }
-        if (!isEmpty(checkAddress.shipping.city)) {
+        if (!isEmpty(address.shipping.city)) {
           res
             .status(400)
             .send({ status: "false", message: "city must be present" });
         }
-        if (!isEmpty(checkAddress.shipping.pinCode)) {
+        if (!isEmpty(address.shipping.pinCode)) {
           res
             .status(400)
             .send({ status: "false", message: "pinCode must be present" });
         }
-        if(!isValidName(checkAddress.shipping.street)) {
+        if(!isValidName(address.shipping.street)) {
             res
             .status(400)
             .send({ status: "false", message: "street should be in alphabetical order" });
         }
-        if(!isValidName(checkAddress.shipping.city)) {
+        if(!isValidName(address.shipping.city)) {
             res
             .status(400)
             .send({ status: "false", message: "city should be in alphabetical order" });
         }
-        if(!isValidPinCode(checkAddress.shipping.pinCode)) {
+        if(!isValidPinCode(address.shipping.pinCode)) {
             res
             .status(400)
             .send({ status: "false", message: "pinCode should be digits only" });
         }
       }
-      if (checkAddress.billing) {
-        // let { street, city, pinCode } = checkAddress.billing;
-        if (!isEmpty(checkAddress.billing.street)) {
+      if (address.billing) {
+        // let { street, city, pinCode } = address.billing;
+        if (!isEmpty(address.billing.street)) {
           res
             .status(400)
             .send({ status: "false", message: "street must be present" });
         }
-        if (!isEmpty(checkAddress.billing.city)) {
+        if (!isEmpty(address.billing.city)) {
           res
             .status(400)
             .send({ status: "false", message: "city must be present" });
         }
-        if (!isEmpty(checkAddress.billing.pinCode)) {
+        if (!isEmpty(address.billing.pinCode)) {
           res
             .status(400)
             .send({ status: "false", message: "pinCode must be present" });
         }
-        if(!isValidName(checkAddress.billing.street)) {
+        if(!isValidName(address.billing.street)) {
             res
             .status(400)
             .send({ status: "false", message: "street should be in alphabetical order" });
         }
-        if(!isValidName(checkAddress.billing.city)) {
+        if(!isValidName(address.billing.city)) {
             res
             .status(400)
             .send({ status: "false", message: "city should be in alphabetical order" });
         }
-        if(!isValidPinCode(checkAddress.billing.pinCode)) {
+        if(!isValidPinCode(address.billing.pinCode)) {
             res
             .status(400)
             .send({ status: "false", message: "pinCode should be digits only" });
         }
       }
     }
-
     const saltRounds = 10; 
-    const hash = bcrypt.hash(password, saltRounds);
+    const hash = await bcrypt.hash(password, saltRounds);
     data.password = hash;
     
     let checkEmail = await userModel.findOne({ email: email });
     if (checkEmail) {
-      res
+        res
         .status(400)
         .send({ status: "false", message: "Email is already in use" });
     }
     let checkPhone = await userModel.findOne({ phone: phone });
     if (checkPhone) {
-      res
+        res
         .status(400)
         .send({ status: "false", message: "Phone number is already in use" });
     }
     if (profileImage && profileImage.length > 0) {
-      let uploadFileURL = await uploadFile(profileImage[0]);
-      console.log(uploadFileURL);
-      data.profileImage = uploadFileURL;
+        let uploadFileURL = await uploadFile(profileImage[0]);
+        console.log(uploadFileURL);
+        data.profileImage = uploadFileURL;
     } else {
-      return res.status(400).send({ status: false, msg: "No file found" });
+        return res.status(400).send({ status: false, msg: "No file found" });
     }
     let savedUser = await userModel.create(data);
     res.status(201).send({
-      status: "true",
-      message: "user has been created successfully",
-      data: savedUser,
+        status: true,
+        message: "user has been created successfully",
+        data: savedUser,
     });
   } catch (err) {
     console.log(err);
