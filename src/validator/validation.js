@@ -26,10 +26,10 @@ const isValidPhone = function (phone) {
   return phoneRegex.test(phone);
 };
 
-// pinCode Validation
-const isValidPinCode = function (pinCode) {
-  const pinCodeRegex = /^[1-9][0-9]{6}$/;
-  return pinCodeRegex.test(pinCode);
+// pincode Validation
+const isValidpincode = function (pincode) {
+  const pincodeRegex = /^[1-9][0-9]{6}$/;
+  return pincodeRegex.test(pincode);
 };
 
 //Value Validation
@@ -44,6 +44,25 @@ const isValidObjectId = (objectId) => {
   return mongoose.Types.ObjectId.isValid(objectId);
 };
 
+const isValidImage = function (img) {
+  let imageRegex = /^\\s]+(\\.(?i)(jpe?g|png|gif|bmp))$/;
+  return imageRegex.test(img);
+}
+
+const isValidSize = function(size) {
+  let sizes = ["S", "XS", "M", "X", "L", "XXL", "XL"];
+  return sizes.includes(size);
+}
+
+const isValidInstallment = function (installment) {
+  let numberRegex = /^(0|[1-9][0-9]*)$/
+  return numberRegex.test(installment)
+}
+
+const isValidPrice = function (price) {
+  let priceRegex = /^([0-9]{0,2}((.)[0-9]{0,2}))$/
+  return priceRegex.test(price)
+}
 
 module.exports = {
   isEmpty,
@@ -51,6 +70,10 @@ module.exports = {
   isValidEmail,
   isValidPhone,
   isValidPassword,
-  isValidPinCode,
+  isValidpincode,
   isValidObjectId,
+  isValidImage,
+  isValidInstallment,
+  isValidSize,
+  isValidPrice
 };

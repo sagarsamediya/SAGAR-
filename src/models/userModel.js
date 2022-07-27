@@ -1,12 +1,12 @@
 const mongoose = require('mongoose');
 
 const userSchema = new mongoose.Schema({
-    fName : {
+    fname : {
         type: String, 
         required: true,
         trim: true   
     },
-    lName: {
+    lname: {
         type: String, 
         required: true,
         trim: true 
@@ -42,7 +42,7 @@ const userSchema = new mongoose.Schema({
                 type: String, 
                 required:true,
             },
-            pinCode: {
+            pincode: {
                 type: Number, 
                 required: true
             }
@@ -56,7 +56,7 @@ const userSchema = new mongoose.Schema({
                 type: String, 
                 required:true,
             },
-            pinCode: {
+            pincode: {
                 type: Number, 
                 required: true
             }
