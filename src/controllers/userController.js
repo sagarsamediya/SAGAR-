@@ -401,7 +401,7 @@ const updateUsersProfile = async function (req, res) {
       data.password = hash;
     }
     //update profile Image
-    // if (!isValidImage(profileImage[0].originalname)) {
+    // if (!isValidImage(profileImage[0])) {
     //   return res
     //     .status(400)
     //     .send({

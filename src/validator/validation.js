@@ -44,9 +44,9 @@ const isValidObjectId = (objectId) => {
   return mongoose.Types.ObjectId.isValid(objectId);
 };
 
-const isValidImage = function (img) {
+const isValidImage = function (profileImage) {
   let imageRegex = /^\\s]+(\\.(?i)(jpe?g|png|gif|bmp))$/;
-  return imageRegex.test(img);
+  return imageRegex.test(profileImage);
 }
 
 const isValidSize = function(size) {
@@ -55,7 +55,7 @@ const isValidSize = function(size) {
 }
 
 const isValidInstallment = function (installment) {
-  let numberRegex = /^(0|[1-9][0-9]*)$/
+  let numberRegex = /^([-]?|[1-9][0-9]*)$/
   return numberRegex.test(installment)
 }
 
