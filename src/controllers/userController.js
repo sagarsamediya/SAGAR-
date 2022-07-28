@@ -15,7 +15,7 @@ let {
   isValidImage,
 } = validation;
 
-// ========> User Create Api <=================
+// ========> Create User Api <=================
 const createUser = async function (req, res) {
   try {
     let data = req.body;

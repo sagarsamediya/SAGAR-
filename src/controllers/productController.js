@@ -12,6 +12,7 @@ let {
   isValidObjectId,
 } = validation;
 
+// ========> Create Product Api <=================
 const createProduct = async function (req, res) {
   try {
     let data = req.body;
@@ -165,6 +166,7 @@ let productById = async function (req, res) {
 const updateProduct = async function (req, res) {
   try {
     let data = req.body;
+    const productImage = req.files;
     let productId = req.params.productId;
 
     if (productId.length == 0) {
@@ -187,7 +189,7 @@ const updateProduct = async function (req, res) {
         .send({ status: false, message: "Product not available by this id" });
     }
 
-    if (Object.keys(data).length == 0) {
+    if (Object.keys(data).length == 0 && Object.keys(productImage).length == 0) {
       return res
         .status(400)
         .send({ status: false, message: "All fields are mandatory" });
@@ -329,14 +331,12 @@ const updateProduct = async function (req, res) {
       }
     }
 
-    const productImage = req.files;
-
-    if (productImage.length > 0) {
+    if (productImage || productImage.files == "") {
       if (productImage.length > 1)
         return res
           .status(400)
           .send({ status: false, message: "only one image at a time" });
-      if (!isValidImage(productImage[0].originalname))
+      if (!isValidImage(productImage[0].productImage))
         return res
           .status(400)
           .send({ status: false, message: "format must be jpeg/jpg/png only" });
