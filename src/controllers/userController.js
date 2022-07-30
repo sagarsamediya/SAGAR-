@@ -341,6 +341,7 @@ const updateUsersProfile = async function (req, res) {
     }
 
     let { fname, lname, email, phone, password, address } = data;
+    // console.log(address);
     let updatedData = {};
     //validation for fname
     if (fname) {
@@ -401,32 +402,31 @@ const updateUsersProfile = async function (req, res) {
       data.password = hash;
     }
     //update profile Image
-    // if (!isValidImage(profileImage[0])) {
-    //   return res
-    //     .status(400)
-    //     .send({
-    //       status: false,
-    //       message: "image format should be jpeg/jpg/png only",
-    //     });
-    // }
-    if (profileImage && profileImage.length > 0) {
-      let uploadFileURL = await uploadFile(profileImage[0]);
-      console.log(uploadFileURL);
-      updatedData.profileImage = uploadFileURL;
-    } else {
-      return res.status(400).send({ status: false, msg: "No file found" });
+    if (productImage || productImage.files == "") {
+      if (productImage.length > 1)
+        return res
+          .status(400)
+          .send({ status: false, message: "only one image at a time" });
+      if (!isValidImage(productImage[0].productImage))
+        return res
+          .status(400)
+          .send({ status: false, message: "format must be jpeg/jpg/png only" });
+      let uploadedFileURL = await uploadFile(productImage[0]);
+      product.productImage = uploadedFileURL;
     }
     //update address
-    if (address) {
-      data.address = JSON.parse(address);
+    address = JSON.parse(address);
+    if (address in data) {
+      // console.log(address);
       if (address.shipping) {
+        console.log(address.shipping)
         if (address.shipping.street) {
           if (!isValidName(address.shipping.street)) {
             return res
               .status(400)
-              .send({ status: false, message: "Please provide street" });
+              .send({ status: false, message: "Please provide valid street name" });
           }
-          updatedData.address.shipping.street = address.shipping.street;
+          // updatedData.address.shipping.street = address.shipping.street;
         }
         if (address.shipping.city) {
           if (!isValidName(address.shipping.city)) {
@@ -434,7 +434,7 @@ const updateUsersProfile = async function (req, res) {
               .status(400)
               .send({ status: false, message: "Please provide city" });
           }
-          updatedData.address.shipping.city = address.shipping.city;
+          // updatedData.address.shipping.city = address.shipping.city;
         }
         if (address.shipping.pincode) {
           if (typeof address.shipping.pincode !== "number") {
@@ -449,17 +449,18 @@ const updateUsersProfile = async function (req, res) {
               .status(400)
               .send({ status: false, msg: "Invalid Shipping pincode" });
           }
-          updatedData.address.shipping.pincode = address.shipping.pincode;
+          // updatedData.address.shipping.pincode = address.shipping.pincode;
         }
       }
       if (address.billing) {
+        console.log(address.billing)
         if (address.billing.street) {
           if (!isValidName(address.billing.street)) {
             return res
               .status(400)
               .send({ status: false, message: "Please provide valid street" });
           }
-          updatedData.address.billing.street = address.billing.street;
+          // updatedData.address.billing.street = address.billing.street;
         }
         if (address.billing.city) {
           if (!isValidName(address.billing.city)) {
@@ -467,7 +468,7 @@ const updateUsersProfile = async function (req, res) {
               .status(400)
               .send({ status: false, message: "Please provide valid city" });
           }
-          updatedData.address.billing.city = address.billing.city;
+          // updatedData.address.billing.city = address.billing.city;
         }
         if (address.billing.pincode) {
           if (typeof address.billing.pincode !== "number") {
@@ -482,10 +483,12 @@ const updateUsersProfile = async function (req, res) {
               .status(400)
               .send({ status: false, msg: "Invalid billing pincode" });
           }
-          updatedData.address.billing.pincode = address.billing.pincode;
+          // updatedData.address.billing.pincode = address.billing.pincode;
         }
       }
     }
+    // address = JSON.parse(address)
+    updatedData.address = address
     const profileUpdated = await userModel.findOneAndUpdate(
       { _id: userId },
       updatedData,
