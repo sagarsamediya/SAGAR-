@@ -18,7 +18,7 @@ const createProduct = async function (req, res) {
     let data = req.body;
     let productImage = req.files;
 
-    if (Object.keys(data).length == 0 ) {
+    if (Object.keys(data).length == 0 || productImage.length == 0) {
       return res
         .status(400)
         .send({ status: false, message: "All fields are mandatory" });
@@ -86,7 +86,7 @@ const createProduct = async function (req, res) {
         .send({ status: false, message: "currencyFormat should be '₹' only" });
     }
     if (currencyId == "INR") {
-      currencyFormat == "₹"
+      currencyFormat == "₹";
     }
     if (!isValidName(style)) {
       res.status(400).send({
@@ -218,13 +218,11 @@ const getProduct = async function (req, res) {
     //sorting
     if (priceSort) {
       if (priceSort != "-1" && priceSort != "1") {
-        return res
-          .status(400)
-          .send({
-            status: false,
-            message:
-              "You can only use 1 for Ascending and -1 for Descending Sorting",
-          });
+        return res.status(400).send({
+          status: false,
+          message:
+            "You can only use 1 for Ascending and -1 for Descending Sorting",
+        });
       }
     }
 
@@ -267,12 +265,10 @@ let productById = async function (req, res) {
       isDeleted: false,
     });
     if (!checkProduct) {
-      return res
-        .status(400)
-        .send({
-          status: false,
-          message: "Product not available by this particular id",
-        });
+      return res.status(400).send({
+        status: false,
+        message: "Product not available by this particular id",
+      });
     }
     return res
       .status(200)
@@ -310,10 +306,7 @@ const updateProduct = async function (req, res) {
         .send({ status: false, message: "Product not available by this id" });
     }
 
-    if (
-      Object.keys(data).length == 0 &&
-      Object.keys(productImage).length == 0
-    ) {
+    if (Object.keys(data).length == 0 && productImage.length == 0) {
       return res
         .status(400)
         .send({ status: false, message: "All fields are mandatory" });
@@ -517,4 +510,10 @@ const deleteProduct = async function (req, res) {
   }
 };
 
-module.exports = { createProduct, getProduct, productById, updateProduct, deleteProduct };
+module.exports = {
+  createProduct,
+  getProduct,
+  productById,
+  updateProduct,
+  deleteProduct,
+};

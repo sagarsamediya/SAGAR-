@@ -21,7 +21,8 @@ const createUser = async function (req, res) {
     let data = req.body;
     let profileImage = req.files;
     console.log(profileImage);
-    if (Object.keys(data).length == 0) {
+
+    if (Object.keys(data).length == 0 || profileImage.length == 0) {
       res
         .status(400)
         .send({ status: "false", message: "All fields are mandatory" });
@@ -62,7 +63,7 @@ const createUser = async function (req, res) {
     if (!isValidName(lname)) {
       res.status(400).send({
         status: "false",
-        message: "lname must be in alphabetical order",
+        message: "last name must be in alphabetical order",
       });
     }
     if (!isValidPhone(phone)) {
@@ -71,14 +72,16 @@ const createUser = async function (req, res) {
         .send({ status: "false", message: "Provide a valid phone number" });
     }
     if (!isValidPassword(password)) {
-      res
-        .status(400)
-        .send({ status: "false", message: "Provide a valid password" });
+      res.status(400).send({
+        status: "false",
+        message:
+          "Password must contain atleast 8 characters including one upperCase, lowerCase, special characters and Numbers",
+      });
     }
     if (!isValidName(fname)) {
       res.status(400).send({
         status: "false",
-        message: "fname must be in alphabetical order",
+        message: "first name must be in alphabetical order",
       });
     }
     if (!isValidEmail(email)) {
@@ -180,15 +183,12 @@ const createUser = async function (req, res) {
         .status(400)
         .send({ status: "false", message: "Phone number is already in use" });
     }
-    // if (!isValidImage(profileImage[0])) {
-    //   return res
-    //     .status(400)
-    //     .send({
-    //       status: false,
-    //       message: "image format should be jpeg/jpg/png only",
-    //     });
-    // }
     if (profileImage && profileImage.length > 0) {
+      if (!["image/png", "image/jpeg"].includes(files[0].mimetype))
+        return res.status(400).send({
+          status: false,
+          message: "only png,jpg,jpeg files are allowed from productImage",
+        });
       let uploadFileURL = await uploadFile(profileImage[0]);
       console.log(uploadFileURL);
       data.profileImage = uploadFileURL;
@@ -314,10 +314,7 @@ const updateUsersProfile = async function (req, res) {
       });
     }
     //Validate body
-    if (
-      Object.keys(data).length == 0 &&
-      Object.keys(profileImage).length == 0
-    ) {
+    if (Object.keys(data).length == 0 && profileImage.length == 0) {
       return res.status(400).send({
         status: false,
         message: "All fields are mandatory",
@@ -372,7 +369,7 @@ const updateUsersProfile = async function (req, res) {
       }
       updatedData.email = email;
     }
-    //Updating of phone
+    //validation of phone
     if (phone) {
       if (!isValidPhone(phone)) {
         return res
@@ -397,6 +394,7 @@ const updateUsersProfile = async function (req, res) {
             "Password must contain atleast 8 characters including one upperCase, lowerCase, special characters and Numbers",
         });
       }
+      // hashing password  
       const saltRounds = 10;
       const hash = await bcrypt.hash(password, saltRounds);
       data.password = hash;
@@ -407,88 +405,105 @@ const updateUsersProfile = async function (req, res) {
         return res
           .status(400)
           .send({ status: false, message: "only one image at a time" });
-      if (!isValidImage(productImage[0].productImage))
+      if (!["image/png", "image/jpeg"].includes(files[0].mimetype))
         return res
           .status(400)
-          .send({ status: false, message: "format must be jpeg/jpg/png only" });
+          .send({
+            status: false,
+            message: "only png,jpg,jpeg files are allowed from productImage",
+          });
       let uploadedFileURL = await uploadFile(productImage[0]);
       product.productImage = uploadedFileURL;
     }
     //update address
     address = JSON.parse(address);
-    if (address in data) {
+    // if (address in data) {
       // console.log(address);
-      if (address.shipping) {
-        console.log(address.shipping)
-        if (address.shipping.street) {
-          if (!isValidName(address.shipping.street)) {
-            return res
-              .status(400)
-              .send({ status: false, message: "Please provide valid street name" });
+      let {shipping, billing} = address;
+      if (shipping) {
+        let {street, city,pincode} = shipping;
+        if (street || street == "") {
+          if(!isEmpty(street)) {
+            return res.status(400).send({status: false, msg: "street must be present"})
           }
-          // updatedData.address.shipping.street = address.shipping.street;
+          if (!isValidName(street)) {
+            return res.status(400).send({
+              status: false,
+              message: "Please provide valid street name",
+            });
+          }
+          updatedData.address.shipping.street = street;
         }
-        if (address.shipping.city) {
-          if (!isValidName(address.shipping.city)) {
+        if (city || city == "") {
+          if(!isEmpty(city)) {
+            return res.status(400).send({status: false, msg: "city must be present"})
+          }
+          if (!isValidName(city)) {
             return res
               .status(400)
               .send({ status: false, message: "Please provide city" });
           }
-          // updatedData.address.shipping.city = address.shipping.city;
+          updatedData.address.shipping.city = city;
         }
-        if (address.shipping.pincode) {
-          if (typeof address.shipping.pincode !== "number") {
+        if (pincode) {
+          if (typeof pincode !== "number") {
             return res.status(400).send({
               status: false,
               message: "Please provide pincode in number format",
             });
           }
           // Validate shipping pincode
-          if (!isValidpincode(address.shipping.pincode)) {
+          if (!isValidpincode(pincode)) {
             return res
               .status(400)
               .send({ status: false, msg: "Invalid Shipping pincode" });
           }
-          // updatedData.address.shipping.pincode = address.shipping.pincode;
+          updatedData.address.shipping.pincode = pincode;
         }
       }
-      if (address.billing) {
-        console.log(address.billing)
-        if (address.billing.street) {
-          if (!isValidName(address.billing.street)) {
+      if (billing) {
+        let {street, city, pincode} = billing
+        if (street || street == "") {
+          if(!isEmpty(street)) {
+            return res.status(400).send({status: false, msg: "street must be present"})
+          }
+          if (!isValidName(street)) {
             return res
               .status(400)
               .send({ status: false, message: "Please provide valid street" });
           }
-          // updatedData.address.billing.street = address.billing.street;
+          updatedData.address.billing.street = street;
         }
-        if (address.billing.city) {
-          if (!isValidName(address.billing.city)) {
+        if (city || city == "") {
+          if(!isEmpty(city)) {
+            return res.status(400).send({status: false, msg: "city must be present"})
+          }
+          if (!isValidName(city)) {
             return res
               .status(400)
               .send({ status: false, message: "Please provide valid city" });
           }
-          // updatedData.address.billing.city = address.billing.city;
+          updatedData.address.billing.city = city;
         }
-        if (address.billing.pincode) {
-          if (typeof address.billing.pincode !== "number") {
+        if (pincode || pincode == "") {
+          if (typeof pincode !== "number") {
             return res.status(400).send({
               status: false,
               message: "Please provide pincode in number format",
             });
           }
           // Validate billing pincode
-          if (!isValidpincode(address.billing.pincode)) {
+          if (!isValidpincode(pincode)) {
             return res
               .status(400)
               .send({ status: false, msg: "Invalid billing pincode" });
           }
-          // updatedData.address.billing.pincode = address.billing.pincode;
+          updatedData.address.billing.pincode = pincode;
         }
       }
-    }
+    // }
     // address = JSON.parse(address)
-    updatedData.address = address
+    updatedData.address = address;
     const profileUpdated = await userModel.findOneAndUpdate(
       { _id: userId },
       updatedData,
