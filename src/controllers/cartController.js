@@ -5,7 +5,7 @@ const validation = require("../validator/validation");
 
 const { isEmpty, isValidObjectId } = validation;
 
-// ==========> Create Cart Api <=============  
+// ==========> Create Cart Api <=============
 const createCart = async (req, res) => {
   try {
     let data = req.body;
@@ -51,7 +51,7 @@ const createCart = async (req, res) => {
         .status(400)
         .send({ status: false, message: "quantity cannot be less then 1" });
 
-    // checking cartId      
+    // checking cartId
     if (cartId) {
       if (!isValidObjectId(cartId))
         return res
@@ -86,12 +86,10 @@ const createCart = async (req, res) => {
       isDeleted: false,
     });
     if (!validProduct)
-      return res
-        .status(404)
-        .send({
-          status: false,
-          message: "No products found or product has been deleted",
-        });
+      return res.status(404).send({
+        status: false,
+        message: "No products found or product has been deleted",
+      });
 
     let validCart = await cartModel.findOne({ userId: userId });
     if (!validCart && findCart) {
@@ -102,12 +100,10 @@ const createCart = async (req, res) => {
     if (validCart) {
       if (cartId) {
         if (validCart._id.toString() != cartId)
-          return res
-            .status(403)
-            .send({
-              status: false,
-              message: "Cart does not belong to this user",
-            });
+          return res.status(403).send({
+            status: false,
+            message: "Cart does not belong to this user",
+          });
       }
       let productidincart = validCart.items;
       let uptotal =
@@ -165,4 +161,77 @@ const createCart = async (req, res) => {
   }
 };
 
-module.exports = { createCart };
+// =========> Get Users Cart Details Api <============
+const getCart = async function (req, res) {
+  try {
+    let userId = req.params.userId;
+    let userLoggedIn = req.tokenData.userId;
+
+    if (!isValidObjectId(userId)) {
+      return res.status(400).send({ status: false, msg: "Invalid userId" });
+    }
+
+    let checkData = await userModel.findOne({ _id: userId });
+
+    if (!checkData) {
+      return res.status(404).send({ status: false, message: "No data found" });
+    }
+    if (checkData._id.toString() != userLoggedIn) {
+      return res
+        .status(403)
+        .send({ status: false, msg: "Error, authorization failed" });
+    }
+
+    let checkCart = await cartModel.findOne({ userId: userId }).select({"items._id":0, __v:0});
+
+    if(!checkCart) {
+      return res.status(404).send({ status: false, message: "no cart found with this userId"})
+    }
+    return res.status(200).send({
+      status: true,
+      message: "Users Profile Details",
+      data: checkCart,
+    });
+  } catch (err) {
+    return res.status(500).send({ status: false, msg: err.message });
+  }
+};
+
+// =========> Delete Users Cart Details Api <============
+const deleteCart = async function (req, res) {
+  try {
+    let userId = req.params.userId;
+    let userLoggedIn = req.tokenData.userId;
+
+    if (!isValidObjectId(userId)) {
+      return res.status(400).send({ status: false, msg: "Invalid userId" });
+    }
+
+    let checkData = await userModel.findOne({ _id: userId });
+
+    if (!checkData) {
+      return res.status(404).send({ status: false, message: "No data found" });
+    }
+    if (checkData._id.toString() != userLoggedIn) {
+      return res
+        .status(403)
+        .send({ status: false, msg: "Error, authorization failed" });
+    }
+
+    let checkCart = await cartModel.findOneAndUpdate({ userId: userId }, {items:[], totalPrice: 0, totalItems: 0});
+
+    if(!checkCart) {
+      return res.status(404).send({ status: false, message: "no cart found with this userId"})
+    }
+    if(checkCart.items.length == 0) {
+      return res.status(400).send({ status: false, message: "Cart already deleted"})
+    }
+    return res.status(204).send({
+      status: true,
+      message: "Cart has been deleted Successfully"
+    }); 
+  } catch (err) {
+    return res.status(500).send({ status: false, msg: err.message });
+  }
+}
+module.exports = { createCart, getCart, deleteCart };

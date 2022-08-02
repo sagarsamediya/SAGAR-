@@ -394,116 +394,120 @@ const updateUsersProfile = async function (req, res) {
             "Password must contain atleast 8 characters including one upperCase, lowerCase, special characters and Numbers",
         });
       }
-      // hashing password  
+      // hashing password
       const saltRounds = 10;
       const hash = await bcrypt.hash(password, saltRounds);
       data.password = hash;
     }
     //update profile Image
-    if (productImage || productImage.files == "") {
-      if (productImage.length > 1)
+    if (profileImage && profileImage.files == "") {
+      if (profileImage.length > 1)
         return res
           .status(400)
           .send({ status: false, message: "only one image at a time" });
       if (!["image/png", "image/jpeg"].includes(files[0].mimetype))
-        return res
-          .status(400)
-          .send({
-            status: false,
-            message: "only png,jpg,jpeg files are allowed from productImage",
-          });
-      let uploadedFileURL = await uploadFile(productImage[0]);
-      product.productImage = uploadedFileURL;
+        return res.status(400).send({
+          status: false,
+          message: "only png,jpg,jpeg files are allowed from productImage",
+        });
+      let uploadedFileURL = await uploadFile(profileImage[0]);
+      product.profileImage = uploadedFileURL;
     }
     //update address
-    address = JSON.parse(address);
-    // if (address in data) {
-      // console.log(address);
-      let {shipping, billing} = address;
-      if (shipping) {
-        let {street, city,pincode} = shipping;
-        if (street || street == "") {
-          if(!isEmpty(street)) {
-            return res.status(400).send({status: false, msg: "street must be present"})
+    if (address) {
+      data.address = JSON.parse(data.address);
+      if (!isEmpty(address)) {
+        let { shipping, billing } = address;
+        if (!isEmpty(shipping)) {
+          let { street, city, pincode } = shipping;
+          if (street || street == "") {
+            if (!isEmpty(street)) {
+              return res
+                .status(400)
+                .send({ status: false, msg: "street must be present" });
+            }
+            if (!isValidName(street)) {
+              return res.status(400).send({
+                status: false,
+                message: "Please provide valid street name",
+              });
+            }
+            updatedData.address.shipping.street = street;
           }
-          if (!isValidName(street)) {
-            return res.status(400).send({
-              status: false,
-              message: "Please provide valid street name",
-            });
+          if (city || city == "") {
+            if (!isEmpty(city)) {
+              return res
+                .status(400)
+                .send({ status: false, msg: "city must be present" });
+            }
+            if (!isValidName(city)) {
+              return res
+                .status(400)
+                .send({ status: false, message: "Please provide city" });
+            }
           }
-          updatedData.address.shipping.street = street;
+          if (pincode) {
+            if (typeof pincode !== "number") {
+              return res.status(400).send({
+                status: false,
+                message: "Please provide pincode in number format",
+              });
+            }
+            // Validate shipping pincode
+            if (!isValidpincode(pincode)) {
+              return res
+                .status(400)
+                .send({ status: false, msg: "Invalid Shipping pincode" });
+            }
+          }
         }
-        if (city || city == "") {
-          if(!isEmpty(city)) {
-            return res.status(400).send({status: false, msg: "city must be present"})
+        if (billing) {
+          let { street, city, pincode } = billing;
+          if (street || street == "") {
+            if (!isEmpty(street)) {
+              return res
+                .status(400)
+                .send({ status: false, msg: "street must be present" });
+            }
+            if (!isValidName(street)) {
+              return res
+                .status(400)
+                .send({
+                  status: false,
+                  message: "Please provide valid street",
+                });
+            }
           }
-          if (!isValidName(city)) {
-            return res
-              .status(400)
-              .send({ status: false, message: "Please provide city" });
+          if (city || city == "") {
+            if (!isEmpty(city)) {
+              return res
+                .status(400)
+                .send({ status: false, msg: "city must be present" });
+            }
+            if (!isValidName(city)) {
+              return res
+                .status(400)
+                .send({ status: false, message: "Please provide valid city" });
+            }
           }
-          updatedData.address.shipping.city = city;
+          if (pincode || pincode == "") {
+            if (typeof pincode !== "number") {
+              return res.status(400).send({
+                status: false,
+                message: "Please provide pincode in number format",
+              });
+            }
+            // Validate billing pincode
+            if (!isValidpincode(pincode)) {
+              return res
+                .status(400)
+                .send({ status: false, msg: "Invalid billing pincode" });
+            }
+          }
         }
-        if (pincode) {
-          if (typeof pincode !== "number") {
-            return res.status(400).send({
-              status: false,
-              message: "Please provide pincode in number format",
-            });
-          }
-          // Validate shipping pincode
-          if (!isValidpincode(pincode)) {
-            return res
-              .status(400)
-              .send({ status: false, msg: "Invalid Shipping pincode" });
-          }
-          updatedData.address.shipping.pincode = pincode;
-        }
+        // updatedData.address = JSON.parse(address);
       }
-      if (billing) {
-        let {street, city, pincode} = billing
-        if (street || street == "") {
-          if(!isEmpty(street)) {
-            return res.status(400).send({status: false, msg: "street must be present"})
-          }
-          if (!isValidName(street)) {
-            return res
-              .status(400)
-              .send({ status: false, message: "Please provide valid street" });
-          }
-          updatedData.address.billing.street = street;
-        }
-        if (city || city == "") {
-          if(!isEmpty(city)) {
-            return res.status(400).send({status: false, msg: "city must be present"})
-          }
-          if (!isValidName(city)) {
-            return res
-              .status(400)
-              .send({ status: false, message: "Please provide valid city" });
-          }
-          updatedData.address.billing.city = city;
-        }
-        if (pincode || pincode == "") {
-          if (typeof pincode !== "number") {
-            return res.status(400).send({
-              status: false,
-              message: "Please provide pincode in number format",
-            });
-          }
-          // Validate billing pincode
-          if (!isValidpincode(pincode)) {
-            return res
-              .status(400)
-              .send({ status: false, msg: "Invalid billing pincode" });
-          }
-          updatedData.address.billing.pincode = pincode;
-        }
-      }
-    // }
-    // address = JSON.parse(address)
-    updatedData.address = address;
+    }
     const profileUpdated = await userModel.findOneAndUpdate(
       { _id: userId },
       updatedData,
@@ -520,3 +524,7 @@ const updateUsersProfile = async function (req, res) {
 };
 
 module.exports = { createUser, userLogin, getUser, updateUsersProfile };
+
+
+
+// ---------------------------------------------------------------------  

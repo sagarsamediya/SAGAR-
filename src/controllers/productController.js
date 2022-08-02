@@ -18,7 +18,7 @@ const createProduct = async function (req, res) {
     let data = req.body;
     let productImage = req.files;
 
-    if (Object.keys(data).length == 0 || productImage.length == 0) {
+    if (Object.keys(data).length == 0 && productImage.length == 0) {
       return res
         .status(400)
         .send({ status: false, message: "All fields are mandatory" });
@@ -100,6 +100,7 @@ const createProduct = async function (req, res) {
         msg: "Invalid Price! price should contain digits only",
       });
     }
+    let product = {};
     if (availableSizes) {
       if (!isEmpty(availableSizes)) {
         return res
@@ -448,17 +449,15 @@ const updateProduct = async function (req, res) {
       }
     }
 
-    if (productImage || productImage.files == "") {
+    if (productImage && productImage.files == "") {
       if (productImage.length > 1)
         return res
           .status(400)
           .send({ status: false, message: "only one image at a time" });
-      if (!isValidImage(productImage[0].productImage))
-        return res
-          .status(400)
-          .send({ status: false, message: "format must be jpeg/jpg/png only" });
       let uploadedFileURL = await uploadFile(productImage[0]);
       product.productImage = uploadedFileURL;
+    } else {
+      return res.status(400).send({ status: false, message: "No file found!"})
     }
     let updatedProduct = await productModel.findOneAndUpdate(
       { _id: productId, isDeleted: false },
