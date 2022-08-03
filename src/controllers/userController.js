@@ -22,7 +22,7 @@ const createUser = async function (req, res) {
     let profileImage = req.files;
     console.log(profileImage);
 
-    if (Object.keys(data).length == 0 || profileImage.length == 0) {
+    if (Object.keys(data).length == 0 && profileImage.length == 0) {
       res
         .status(400)
         .send({ status: "false", message: "All fields are mandatory" });
