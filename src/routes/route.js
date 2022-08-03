@@ -7,7 +7,7 @@ const middleWare = require("../middleware/auth");
 
 let { createUser, userLogin, getUser, updateUsersProfile } = userController;
 let { createProduct, getProduct, productById, updateProduct, deleteProduct } = productController;
-let { createCart, getCart, deleteCart } = cartController;
+let { createCart, updateCart, getCart, deleteCart } = cartController;
 let { authentication, authorization } = middleWare;
 
 // ==========> Create User Api <============
@@ -41,7 +41,7 @@ router.delete("/products/:productId", deleteProduct);
 router.post("/users/:userId/cart", authentication, authorization, createCart);
 
 // =========> Update Users Cart Api <============
-// router.put("/users/:userId/cart", authentication, authorization, updateCart);
+router.put("/users/:userId/cart", authentication, authorization, updateCart);
 
 // =========> Get Users Cart Details Api <============
 router.get("/users/:userId/cart", authentication, authorization, getCart);
@@ -50,7 +50,7 @@ router.get("/users/:userId/cart", authentication, authorization, getCart);
 router.delete("/users/:userId/cart", authentication, authorization, deleteCart);
 
 router.all("/*", async function (req, res) {
-    res.status(404).send({ status: false, msg: "Page Not Found!"})
+    res.status(404).send({ status: false, msg: "Page Not Found!"});
 });
 
 module.exports = router;
