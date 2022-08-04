@@ -37,7 +37,8 @@ const cartSchema = new mongoose.Schema(
     status: {
         type: String,
         default: 'pending',
-        enum: ['pending','completed','cancelled']
+        enum: ['pending','completed','cancelled'],
+        trim: true,
     },
     deletedAt: {
         type: Date,

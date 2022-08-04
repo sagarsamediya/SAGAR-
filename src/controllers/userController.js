@@ -405,11 +405,11 @@ const updateUsersProfile = async function (req, res) {
         return res
           .status(400)
           .send({ status: false, message: "only one image at a time" });
-      if (!["image/png", "image/jpeg"].includes(files[0].mimetype))
-        return res.status(400).send({
-          status: false,
-          message: "only png,jpg,jpeg files are allowed from productImage",
-        });
+      // if (!["image/png", "image/jpeg"].includes(files[0].mimetype))
+      //   return res.status(400).send({
+      //     status: false,
+      //     message: "only png,jpg,jpeg files are allowed from productImage",
+      //   });
       let uploadedFileURL = await uploadFile(profileImage[0]);
       product.profileImage = uploadedFileURL;
     }

@@ -12,7 +12,7 @@ let { createCart, updateCart, getCart, deleteCart } = cartController;
 let { createOrder, updateOrder } = orderController;
 let { authentication, authorization } = middleWare;
 
-// ==========> Create User Api <============
+// ==========> Create User Api <============ 
 router.post("/register", createUser);
 
 // =========> User Login Api <============
