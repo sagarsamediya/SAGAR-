@@ -329,7 +329,6 @@ const updateCart = async function (req, res) {
       });
     }
   } catch (err) {
-    console.log(err.message)
     res.status(500).send({ status: false, error: err.message });
   }
 };

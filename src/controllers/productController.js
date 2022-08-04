@@ -197,7 +197,7 @@ const getProduct = async function (req, res) {
           .status(400)
           .send({ status: false, message: "plz Enter a value" });
       }
-      query["price"] = { $gt: priceGreaterThen };
+      query["price"] = { $gte: priceGreaterThen };
     }
     //validation for  price greater than
     if (priceLessThen || priceLessThen == "") {
@@ -211,10 +211,10 @@ const getProduct = async function (req, res) {
           .status(400)
           .send({ status: false, message: "plz Enter a value" });
       }
-      query["price"] = { $lt: priceLessThen };
+      query["price"] = { $lte: priceLessThen };
     }
     if (priceGreaterThen && priceLessThen) {
-      query["price"] = { $gt: priceGreaterThen, $lt: priceLessThen };
+      query["price"] = { $gte: priceGreaterThen, $lte: priceLessThen };
     }
     //sorting
     if (priceSort) {

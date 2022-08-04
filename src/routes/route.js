@@ -3,11 +3,13 @@ const router = express.Router();
 const userController = require("../controllers/userController");
 const productController = require("../controllers/productController");
 const cartController = require("../controllers/cartController");
+const orderController = require("../controllers/orderController");
 const middleWare = require("../middleware/auth");
 
 let { createUser, userLogin, getUser, updateUsersProfile } = userController;
 let { createProduct, getProduct, productById, updateProduct, deleteProduct } = productController;
 let { createCart, updateCart, getCart, deleteCart } = cartController;
+let { createOrder, updateOrder } = orderController;
 let { authentication, authorization } = middleWare;
 
 // ==========> Create User Api <============
@@ -48,6 +50,12 @@ router.get("/users/:userId/cart", authentication, authorization, getCart);
 
 // =========> Delete Users Cart Details Api <============
 router.delete("/users/:userId/cart", authentication, authorization, deleteCart);
+
+// =========> Create Order Api <============
+router.post("/users/:userId/orders", authentication, authentication, createOrder);
+
+// =========> Update Order Api <============
+router.put("/users/:userId/orders", authentication, authentication, updateOrder);
 
 router.all("/*", async function (req, res) {
     res.status(404).send({ status: false, msg: "Page Not Found!"});
