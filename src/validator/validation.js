@@ -64,6 +64,11 @@ const isValidPrice = function (price) {
   return priceRegex.test(price)
 }
 
+const isValidStatus = function (status) {
+  let state = ['pending','completed','cancelled'];
+  return state.includes(status);
+}
+
 module.exports = {
   isEmpty,
   isValidName,
@@ -75,5 +80,6 @@ module.exports = {
   isValidImage,
   isValidInstallment,
   isValidSize,
-  isValidPrice
+  isValidPrice,
+  isValidStatus
 };
