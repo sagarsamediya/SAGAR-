@@ -168,7 +168,7 @@ const getProduct = async function (req, res) {
   try {
     let filterQuery = req.query;
     let query = {};
-    let { size, name, priceGreaterThen, priceLessThen, priceSort } =
+    let { size, name, priceGreaterThan, priceLessThan, priceSort } =
       filterQuery;
 
     //validation for size
@@ -184,7 +184,7 @@ const getProduct = async function (req, res) {
           message: "Please Provide Available Sizes from S,XS,M,X,L,XXL,XL",
         });
       }
-      query.availableSizes = size;
+      query.availableSizes = size.split(' ');
     }
     //validation for name
     if (name || name == "") {
@@ -198,38 +198,38 @@ const getProduct = async function (req, res) {
           .status(400)
           .send({ status: false, message: "plz Enter a valid name" });
       }
-      query["title"] = { $regex: name };
+      query["title"] = { "$regex": name , "$options": "i"};
     }
     //validation for  price greater than
-    if (priceGreaterThen || priceGreaterThen == "") {
-      if (!isEmpty(priceGreaterThen)) {
+    if (priceGreaterThan || priceGreaterThan == "") {
+      if (!isEmpty(priceGreaterThan)) {
         return res
           .status(400)
           .send({ status: false, msg: "Please enter price greater than" });
       }
-      if (!isValidPrice(priceGreaterThen)) {
+      if (!isValidPrice(priceGreaterThan)) {
         return res
           .status(400)
           .send({ status: false, message: "please provide a valid price" });
       }
-      query["price"] = { $gte: priceGreaterThen };
+      query["price"] = { $gt: priceGreaterThan };
     }
     //validation for  price greater than
-    if (priceLessThen || priceLessThen == "") {
-      if (!isEmpty(priceLessThen)) {
+    if (priceLessThan || priceLessThan == "") {
+      if (!isEmpty(priceLessThan)) {
         return res
           .status(400)
           .send({ status: false, message: "Please enter price lesser than" });
       }
-      if (!isValidPrice(priceLessThen)) {
+      if (!isValidPrice(priceLessThan)) {
         return res
           .status(400)
           .send({ status: false, message: "please provide a valid price" });
       }
-      query["price"] = { $lte: priceLessThen };
+      query["price"] = { $lt: priceLessThan };
     }
-    if (priceGreaterThen && priceLessThen) {
-      query["price"] = { $gte: priceGreaterThen, $lte: priceLessThen };
+    if (priceGreaterThan && priceLessThan) {
+      query["price"] = { $gt: priceGreaterThan, $lt: priceLessThan };
     }
     //sorting
     if (priceSort) {
