@@ -31,6 +31,7 @@ const createProduct = async function (req, res) {
       currencyFormat,
       style,
       availableSizes,
+      isFreeShipping,
       installments,
     } = data;
 
@@ -66,6 +67,14 @@ const createProduct = async function (req, res) {
           status: false,
           message: "title should include alphabets only",
         });
+      }
+    }
+    if(isFreeShipping || isFreeShipping == "") {
+      if (!isEmpty(isFreeShipping)) {
+        return res.status(400).send({status: false, msg: "isFreeShipping value should be there"})
+      }
+      if(!["true", "false"].includes(isFreeShipping)) {
+        return res.status(400).send({ status: false, message: "isFreeShipping value should be true and false only"});
       }
     }
     let checkTitle = await productModel.findOne({ title: title });
@@ -107,6 +116,12 @@ const createProduct = async function (req, res) {
           .status(400)
           .send({ status: false, msg: "available Sizes must be present" });
       }
+      // if(!isValidSize(availableSizes)) {
+      //   return res.status(400).send({
+      //     status: false,
+      //     message: "availableSizes must be [S, XS, M, X, L, XXL, XL]"
+      //   });
+      // }
       if (availableSizes) {
         let validSizes = ["S", "XS", "M", "X", "L", "XXL", "XL"];
         let InputSizes = availableSizes
@@ -195,7 +210,7 @@ const getProduct = async function (req, res) {
       if (!isValidPrice(priceGreaterThen)) {
         return res
           .status(400)
-          .send({ status: false, message: "plz Enter a value" });
+          .send({ status: false, message: "please provide a valid price" });
       }
       query["price"] = { $gte: priceGreaterThen };
     }
@@ -209,7 +224,7 @@ const getProduct = async function (req, res) {
       if (!isValidPrice(priceLessThen)) {
         return res
           .status(400)
-          .send({ status: false, message: "plz Enter a value" });
+          .send({ status: false, message: "please provide a valid price" });
       }
       query["price"] = { $lte: priceLessThen };
     }
@@ -284,14 +299,8 @@ let productById = async function (req, res) {
 const updateProduct = async function (req, res) {
   try {
     let data = req.body;
-    const productImage = req.files;
     let productId = req.params.productId;
 
-    if (productId.length == 0) {
-      return res
-        .status(404)
-        .send({ status: false, message: "Error! Please provide product Id." });
-    }
     if (!isValidObjectId(productId)) {
       return res
         .status(400)
@@ -307,7 +316,7 @@ const updateProduct = async function (req, res) {
         .send({ status: false, message: "Product not available by this id" });
     }
 
-    if (Object.keys(data).length == 0 && productImage.length == 0) {
+    if (Object.keys(data).length == 0) {
       return res
         .status(400)
         .send({ status: false, message: "All fields are mandatory" });
@@ -325,6 +334,7 @@ const updateProduct = async function (req, res) {
     } = data;
 
     let product = {};
+    const productImage = req.files;
 
     if (title || title == "") {
       if (!isEmpty(title)) {
@@ -456,8 +466,6 @@ const updateProduct = async function (req, res) {
           .send({ status: false, message: "only one image at a time" });
       let uploadedFileURL = await uploadFile(productImage[0]);
       product.productImage = uploadedFileURL;
-    } else {
-      return res.status(400).send({ status: false, message: "No file found!"})
     }
     let updatedProduct = await productModel.findOneAndUpdate(
       { _id: productId, isDeleted: false },

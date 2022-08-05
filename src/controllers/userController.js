@@ -23,7 +23,7 @@ const createUser = async function (req, res) {
     console.log(profileImage);
 
     if (Object.keys(data).length == 0 && profileImage.length == 0) {
-      res
+      return res
         .status(400)
         .send({ status: "false", message: "All fields are mandatory" });
     }
@@ -31,17 +31,17 @@ const createUser = async function (req, res) {
     let { fname, lname, email, phone, password, address } = data;
 
     if (!isEmpty(fname)) {
-      res
+      return res
         .status(400)
         .send({ status: "false", message: "fname must be present" });
     }
     if (!isEmpty(lname)) {
-      res
+      return res
         .status(400)
         .send({ status: "false", message: "lname must be present" });
     }
     if (!isEmpty(email)) {
-      res
+      return res
         .status(400)
         .send({ status: "false", message: "email must be present" });
     }
@@ -51,12 +51,12 @@ const createUser = async function (req, res) {
         .send({ status: "false", message: "phone number must be present" });
     }
     if (!isEmpty(password)) {
-      res
+      return res
         .status(400)
         .send({ status: "false", message: "password must be present" });
     }
     if (!isEmpty(address)) {
-      res
+      return res
         .status(400)
         .send({ status: "false", message: "Address must be present" });
     }
@@ -67,25 +67,25 @@ const createUser = async function (req, res) {
       });
     }
     if (!isValidPhone(phone)) {
-      res
+      return res
         .status(400)
         .send({ status: "false", message: "Provide a valid phone number" });
     }
     if (!isValidPassword(password)) {
-      res.status(400).send({
+      return res.status(400).send({
         status: "false",
         message:
           "Password must contain atleast 8 characters including one upperCase, lowerCase, special characters and Numbers",
       });
     }
     if (!isValidName(fname)) {
-      res.status(400).send({
+      return res.status(400).send({
         status: "false",
         message: "first name must be in alphabetical order",
       });
     }
     if (!isValidEmail(email)) {
-      res.status(400).send({
+      return res.status(400).send({
         status: "false",
         message: "provide a valid emailId",
       });
@@ -93,38 +93,38 @@ const createUser = async function (req, res) {
 
     // ------- Address Validation  --------
     if (address) {
-      data.address = JSON.parse(address);
+      data.address = JSON.parse(data.address);
       if (address.shipping) {
         // let { street, city, pincode } = address.shipping;
         if (!isEmpty(address.shipping.street)) {
-          res
+          return res
             .status(400)
             .send({ status: "false", message: "street must be present" });
         }
         if (!isEmpty(address.shipping.city)) {
-          res
+          return res
             .status(400)
             .send({ status: "false", message: "city must be present" });
         }
         if (!isEmpty(address.shipping.pincode)) {
-          res
+          return res
             .status(400)
             .send({ status: "false", message: "pincode must be present" });
         }
         if (!isValidName(address.shipping.street)) {
-          res.status(400).send({
+          return res.status(400).send({
             status: "false",
             message: "street should be in alphabetical order",
           });
         }
         if (!isValidName(address.shipping.city)) {
-          res.status(400).send({
+          return res.status(400).send({
             status: "false",
             message: "city should be in alphabetical order",
           });
         }
         if (!isValidpincode(address.shipping.pincode)) {
-          res.status(400).send({
+          return res.status(400).send({
             status: "false",
             message: "pincode should be digits only",
           });
@@ -133,34 +133,34 @@ const createUser = async function (req, res) {
       if (address.billing) {
         // let { street, city, pincode } = address.billing;
         if (!isEmpty(address.billing.street)) {
-          res
+          return res
             .status(400)
             .send({ status: "false", message: "street must be present" });
         }
         if (!isEmpty(address.billing.city)) {
-          res
+          return res
             .status(400)
             .send({ status: "false", message: "city must be present" });
         }
         if (!isEmpty(address.billing.pincode)) {
-          res
+          return res
             .status(400)
             .send({ status: "false", message: "pincode must be present" });
         }
         if (!isValidName(address.billing.street)) {
-          res.status(400).send({
+          return res.status(400).send({
             status: "false",
             message: "street should be in alphabetical order",
           });
         }
         if (!isValidName(address.billing.city)) {
-          res.status(400).send({
+          return res.status(400).send({
             status: "false",
             message: "city should be in alphabetical order",
           });
         }
         if (!isValidpincode(address.billing.pincode)) {
-          res.status(400).send({
+          return res.status(400).send({
             status: "false",
             message: "pincode should be digits only",
           });
@@ -173,22 +173,17 @@ const createUser = async function (req, res) {
 
     let checkEmail = await userModel.findOne({ email: email });
     if (checkEmail) {
-      res
+      return res
         .status(400)
         .send({ status: "false", message: "Email is already in use" });
     }
     let checkPhone = await userModel.findOne({ phone: phone });
     if (checkPhone) {
-      res
+      return res
         .status(400)
         .send({ status: "false", message: "Phone number is already in use" });
     }
     if (profileImage && profileImage.length > 0) {
-      if (!["image/png", "image/jpeg"].includes(files[0].mimetype))
-        return res.status(400).send({
-          status: false,
-          message: "only png,jpg,jpeg files are allowed from productImage",
-        });
       let uploadFileURL = await uploadFile(profileImage[0]);
       console.log(uploadFileURL);
       data.profileImage = uploadFileURL;
@@ -196,7 +191,7 @@ const createUser = async function (req, res) {
       return res.status(400).send({ status: false, msg: "No file found" });
     }
     let savedUser = await userModel.create(data);
-    res.status(201).send({
+    return res.status(201).send({
       status: true,
       message: "user has been created successfully",
       data: savedUser,
@@ -230,9 +225,7 @@ const userLogin = async function (req, res) {
         .send({ status: false, message: "Password must be present" });
     }
 
-    let checkEmail = await userModel.findOne({
-      email: email,
-    });
+    let checkEmail = await userModel.findOne({ email: email });
     if (!checkEmail) {
       return res.status(401).send({
         status: false,
@@ -256,7 +249,7 @@ const userLogin = async function (req, res) {
       "group1Project5"
     );
     res.setHeader("x-api-key", token);
-    res.status(200).send({
+    return res.status(200).send({
       status: true,
       message: "User Login Successful",
       data: { userId: checkEmail._id, token: token },
