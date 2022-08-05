@@ -46,7 +46,7 @@ const createUser = async function (req, res) {
         .send({ status: "false", message: "email must be present" });
     }
     if (!isEmpty(phone)) {
-      res
+      return res
         .status(400)
         .send({ status: "false", message: "phone number must be present" });
     }
@@ -61,7 +61,7 @@ const createUser = async function (req, res) {
         .send({ status: "false", message: "Address must be present" });
     }
     if (!isValidName(lname)) {
-      res.status(400).send({
+      return res.status(400).send({
         status: "false",
         message: "last name must be in alphabetical order",
       });
