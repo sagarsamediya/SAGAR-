@@ -28,7 +28,7 @@ const isValidPhone = function (phone) {
 
 // pincode Validation
 const isValidpincode = function (pincode) {
-  const pincodeRegex = /^[1-9][0-9]{6}$/;
+  const pincodeRegex = /^[1-9][0-9]{5}$/;
   return pincodeRegex.test(pincode);
 };
 
