@@ -69,6 +69,11 @@ const isValidStatus = function (status) {
   return state.includes(status);
 }
 
+const isValidStreet = function (street) {
+  let streets = /^[A-Za-z0-9'\.\-\s\,]$/
+  return streets.test(street);
+}
+
 module.exports = {
   isEmpty,
   isValidName,
@@ -81,5 +86,6 @@ module.exports = {
   isValidInstallment,
   isValidSize,
   isValidPrice,
-  isValidStatus
+  isValidStatus,
+  isValidStreet
 };
