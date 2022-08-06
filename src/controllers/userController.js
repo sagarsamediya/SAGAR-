@@ -147,14 +147,11 @@ const userLogin = async function (req, res) {
     if (!checkPassword) {
       return res.status(401).send({status: false,message: "please provide a correct password"});
     }
-    let token = jwt.sign(
-      {
+    let token = jwt.sign({
         userId: checkEmail._id.toString(),
         iat: Math.floor(Date.now() / 1000),
         exp: Math.floor(Date.now() / 1000) + 60 * 60 * 24, //expires in 24 hr
-      },
-      "group1Project5"
-    );
+      },"group1Project5");
     res.setHeader("x-api-key", token);
     return res.status(200).send({status: true,message: "User Login Successful",data: {userId: checkEmail._id, token: token},});
   } catch (err) {
