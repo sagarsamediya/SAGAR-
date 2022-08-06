@@ -70,7 +70,7 @@ const isValidStatus = function (status) {
 }
 
 const isValidStreet = function (street) {
-  let streets = /^[A-Za-z0-9'\.\-\s\,]$/
+  let streets = /^[#.0-9a-zA-Z\s,-]+$/
   return streets.test(street);
 }
 
