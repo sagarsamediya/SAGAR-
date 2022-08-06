@@ -130,7 +130,7 @@ const userLogin = async function (req, res) {
     let { email, password } = data;
 
     if (Object.keys(data).length == 0) {
-      return res.status(400).send({status: false, message: "All fields are mandatory"});
+      return res.status(400).send({status: false, message: "Please provide email and password"});
     }
     if (!email) {
       return res.status(400).send({ status: false, message: "Email must be present" });
@@ -188,12 +188,16 @@ const getUser = async function (req, res) {
 const updateUsersProfile = async function (req, res) {
   try {
     let userId = req.params.userId;
+    let userLoggedIn = req.tokenData.userId;
 
     if (!isValidObjectId(userId)) {    //check if userid is valid
       return res.status(400).send({status: false, message: `${userId} is invalid`});
     }
     const checkUser = await userModel.findOne({ _id: userId });
     if (!checkUser) { return res.status(404).send({status: false, message: "User does not exist"});
+    }
+    if (userId != userLoggedIn) {
+      return res.status(403).send({status: false, msg: "Error, authorization failed"});
     }
     const data = req.body;
     if (Object.keys(data).length == 0) {
