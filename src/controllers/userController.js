@@ -33,6 +33,9 @@ const createUser = async function (req, res) {
     if (!isEmpty(password)) {
       return res.status(400).send({status: "false", message: "password must be present"});
     }
+    if(!isEmpty(profileImage)) {
+      return res.status(400).send({status: "false", message: "profileImage must be present"});
+    }
     if (!isEmpty(address)) {
       return res.status(400).send({status: "false", message: "Address must be present"});
     }
@@ -108,10 +111,8 @@ const createUser = async function (req, res) {
     if (checkPhone) {
       return res.status(400).send({status: "false", message: "Phone number is already in use"});
     }
-    if (profileImage && profileImage == 0) {
-      if(!isEmpty(profileImage)) {
-        return res.status(400).send({status: "false", message: "ProfileImage must be present"})
-      }
+    if (profileImage && profileImage.files == 0) {
+
       let uploadFileURL = await uploadFile(profileImage[0]);
       console.log(uploadFileURL);
       data.profileImage = uploadFileURL;
