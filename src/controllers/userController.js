@@ -108,13 +108,16 @@ const createUser = async function (req, res) {
     if (checkPhone) {
       return res.status(400).send({status: "false", message: "Phone number is already in use"});
     }
-    if (profileImage && profileImage.length > 0) {
+    if (profileImage && profileImage == 0) {
+      if(!isEmpty(profileImage)) {
+        return res.status(400).send({status: "false", message: "ProfileImage must be present"})
+      }
       let uploadFileURL = await uploadFile(profileImage[0]);
       console.log(uploadFileURL);
       data.profileImage = uploadFileURL;
-    } else {
-      return res.status(400).send({ status: false, msg: "No file found" });
-    }
+     }// else {
+    //   return res.status(400).send({ status: false, msg: "No file found" });
+    // }
     let savedUser = await userModel.create(data);
     return res.status(201).send({
       status: true,message: "user has been created successfully",data: savedUser});
