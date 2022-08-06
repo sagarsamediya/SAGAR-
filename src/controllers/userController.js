@@ -297,7 +297,7 @@ const updateUsersProfile = async function (req, res) {
     // }
 
     let updateData = await userModel.findOneAndUpdate({ _id: userId }, data, {new: true});
-    res.status(201).send({status: true,message: "User profile Updated",data: updateData});
+    res.status(200).send({status: true,message: "User profile Updated",data: updateData});
   } catch (err) {
     res.status(500).send({status: false, message: err.message});
   }
