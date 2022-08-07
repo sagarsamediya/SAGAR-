@@ -92,15 +92,13 @@ const updateOrder = async function (req, res) {
     if (!validOrder) {
       return res.status(404).send({ status: false, message: "Order doesn't exist" });
     }
-    // if(validOrder.status == 'cancelled') {
-    //     return res.status(400).send({status: false, message: "Dear user! your order is already get cancelled"});
-    // }
-    // if(validOrder.status == 'pending') {
-    //     return res.status(400).send({status: false, message: "Dear user! your order is in pending state"});
-    // }
-    // if(validOrder.status == 'completed') {
-    //     return res.status(400).send({status: false, message: "Dear user! your order has been completed, Thank you!"});
-    // }
+
+    if(validOrder.status !== 'pending') {
+        return res.status(400).send({status: false, message: "Dear user! your order is not in pending state it is completed or cancelled"});
+    }
+    if(!["completed", "cancelled"].includes(status)) {
+        return res.status(400).send({status: false, message: "Dear user! your order status can be changed to completed or cancelled only"});
+    }
     if (status == "cancelled") {
       if (validOrder.cancellable == false) {
         return res.status(400).send({status: false, message: "This order is not cancellable"});
@@ -110,7 +108,7 @@ const updateOrder = async function (req, res) {
       {$set: { status: status, cancellable: false}},{new: true});
 
     return res
-      .status(200).send({status: true,message: `Order status has been updated to ${status} successfully`,data: updateOrder});
+      .status(200).send({status: true,message: `Success`,data: updateOrder});
   } catch (err) {
     return res.status(500).send({ status: false, message: err.message });
   }

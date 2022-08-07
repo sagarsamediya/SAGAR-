@@ -8,10 +8,9 @@ let {isEmpty,isValidName,isValidPrice,isValidInstallment,isValidObjectId,isValid
 const createProduct = async function (req, res) {
   try {
     let data = req.body;
-    let productImage = req.files;
 
-    if (Object.keys(data).length == 0 && productImage.length == 0) {
-      return res.status(400).send({status: false, message: "All fields are mandatory"});
+    if (Object.keys(data).length == 0) {
+      return res.status(400).send({status: false, message: "Body must be present mandatory"});
     }
     let {title,description,price,currencyId,currencyFormat,style,availableSizes,isFreeShipping,installments} = data;
 
@@ -48,13 +47,11 @@ const createProduct = async function (req, res) {
     if (checkTitle) {
       res.status(400).send({status: false, message: "title is already present"});
     }
-    if (currencyId !== "INR") {
-      res.status(400).send({status: false,message: "currencyId should be in INR format only"});
-    }
-    if (currencyFormat !== "₹") {
-      res.status(400).send({status: false, message: "currencyFormat should be '₹' only"});
+    if (!(currencyId == "INR" || currencyId == "USD")) {
+      res.status(400).send({status: false,message: "currencyId should be in INR  & USD only"});
     }
     if (currencyId == "INR") {currencyFormat == "₹"}
+    if (currencyId == "USD") {currencyFormat == "$"}
     if (!isValidName(style)) {
       res.status(400).send({status: false,message: "style should include alphabets only"});
     }
@@ -83,14 +80,16 @@ const createProduct = async function (req, res) {
         return res.status(400).send({status: false, message: "Installments should be digits only"});
       }
     }
+    let productImage = req.files;
     if (productImage && productImage.length > 0) {
       let uploadFileURL = await uploadFile(productImage[0]);
       data.productImage = uploadFileURL;
     } else {
-      return res.status(400).send({ status: false, msg: "No file found" });
+      return res.status(400).send({ status: false, msg: "No image found" });
     }
+
     let savedProduct = await productModel.create(data);
-    return res.status(201).send({status: true,message: "Product saved successfully",data: savedProduct});
+    return res.status(201).send({status: true,message: "Success",data: savedProduct});
   } catch (err) {
     return res.status(500).send({ status: false, message: err.message });
   }
